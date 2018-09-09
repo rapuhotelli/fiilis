@@ -5,24 +5,24 @@ import Screen from '../components/Screen'
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window')
 
-const margin = 10
+const margin = 10;
 
 export default class Question extends React.Component {
 
   state = {
     boxSize: 10,
-  }
+  };
 
   chooseMood = (name) => {
     console.log(name)
-  }
+  };
 
   leiska = (event) => {
     const containerWidth = event.nativeEvent.layout.width
     this.setState({
       boxSize: containerWidth / 3,
     })
-  }
+  };
 
   render() {
     return (

@@ -3,14 +3,16 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "dev": "yarn start & yarn watch \"yarn lint\" ./app",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "lint": "tslint -p \".\" -t stylish",
+    "lint": "tslint -p \".\" -t stylish"
   },
   "dependencies": {
     "react": "16.4.1",
     "react-native": "0.56.0",
-    "react-navigation": "^2.12.1"
+    "react-navigation": "^2.12.1",
+    "watch": "^1.0.2"
   },
   "devDependencies": {
     "@types/react": "^16.4.13",

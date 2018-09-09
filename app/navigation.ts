@@ -1,11 +1,11 @@
-import {createStackNavigator} from 'react-navigation'
+import {createStackNavigator, NavigationScreenProps} from 'react-navigation'
 import Question from './views/Question'
 
 export default createStackNavigator({
   Question: {
     screen: Question,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Miltä nyt tuntuu?',
+    navigationOptions: ({ navigation }:NavigationScreenProps ) => ({
+      title: 'Miltä nyt tuntuu!?',
     }),
   },
 
