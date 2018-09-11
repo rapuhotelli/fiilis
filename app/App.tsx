@@ -6,18 +6,19 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import * as React from 'react'
+// import { StyleSheet } from 'react-native';
 import MainNav from './navigation'
 
-export default class App extends Component<Props> {
+export default class App extends React.Component<{}> {
   render() {
     return (
       <MainNav />
-    );
+    )
   }
 }
 
+/*
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -36,3 +37,4 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+*/

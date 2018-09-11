@@ -4,9 +4,6 @@ import Question from './views/Question'
 export default createStackNavigator({
   Question: {
     screen: Question,
-    navigationOptions: ({ navigation }:NavigationScreenProps ) => ({
-      title: 'Miltä nyt tuntuu!?',
-    }),
   },
 
   /*
@@ -17,4 +14,6 @@ export default createStackNavigator({
     })
   }
   */
+}, {
+  headerMode: 'none'
 })
