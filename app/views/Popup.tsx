@@ -1,16 +1,19 @@
 import * as React from 'react'
 import { Animated, Dimensions, StyleSheet, Text, View, Easing } from 'react-native'
 import AnimatedValue = Animated.AnimatedValue
+import FeelButton from '../components/FeelButton'
 
 interface Props {
   origin: {left: number, top: number, width: number, height: number} | null
+  onPress: (name: string) => void,
+  boxSize: number,
 }
 interface State {
   animatedValue: AnimatedValue
 }
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window')
 
-export default class ExpandHeader extends React.Component<Props, State> {
+export default class Popup extends React.Component<Props, State> {
   state = {
     animatedValue: new Animated.Value(0),
   }
@@ -28,11 +31,11 @@ export default class ExpandHeader extends React.Component<Props, State> {
   }
 
   render() {
-    const { origin } = this.props
+    const { origin, boxSize } = this.props
     if (origin === null) {
       return null
     }
-    console.log(this.state.animatedValue)
+
     return (
       <Animated.View
         style={[styles.generics, {
@@ -58,13 +61,45 @@ export default class ExpandHeader extends React.Component<Props, State> {
           }),
         }]}
       >
-
-        <Text>Test</Text>
+      <View style={styles.buttonContainer}>
+        <View style={styles.verticalCenter}>
+        <FeelButton style={{borderColor: 'white'}} name="herp" onPress={() => {}} boxSize={boxSize}/>
+        <FeelButton style={{borderColor: 'white'}} name="herp" onPress={() => {}} boxSize={boxSize}/>
+        <FeelButton style={{borderColor: 'white'}} name="herp" onPress={() => {}} boxSize={boxSize}/>
+        </View>
+      </View>
       </Animated.View>
     )
   }
 }
+          //<Text style={styles.niceText}>Test</Text>
 
 const styles = StyleSheet.create({
-  generics: {position: 'absolute', backgroundColor: 'rebeccapurple'},
+  verticalCenter: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    flexDirection: 'column',
+  },
+  buttonContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+  },
+  box: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    borderRadius: 20,
+    width: '100%',
+    height: '100%',
+    borderWidth: 6,
+    borderColor: 'rebeccapurple',
+  },
+  niceText: {
+    color: 'white',
+    fontSize: 24,
+  },
+  generics: {
+    position: 'absolute',
+    backgroundColor: 'rebeccapurple',
+  },
 })

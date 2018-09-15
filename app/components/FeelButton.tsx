@@ -1,12 +1,15 @@
 import * as React from 'react'
 import { Animated, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { ViewStyle } from 'react-native'
 
 interface Props {
   name: string,
   image?: string,
   // onPress: (rect: LayoutRectangle, name: string) => void,
-  onPress: (rect: any, name: string) => void,
-  boxSize: number
+  // onPress: (rect: any, name: string) => void,
+  onPress: (thisRef: any) => void,
+  boxSize: number,
+  style?: ViewStyle
 }
 const padding = 12
 
@@ -26,10 +29,8 @@ export default class FeelButton extends React.Component<Props> {
 
   onPress = () => {
     setTimeout(() => {
-      this.buttonRef.measure((fx, fy, width, height, px, py) => {
-        this.props.onPress({left: px + padding, top: py + padding, width: width - padding * 2, height: width - padding * 2}, this.props.name)
-      })
-    }, 500)
+      this.props.onPress(this)
+    }, 2000)
     Animated.spring(this.state.animatedValue, {
       toValue: 0.5,
       bounciness: 50,
@@ -39,11 +40,11 @@ export default class FeelButton extends React.Component<Props> {
   }
 
   render() {
-    const { name, boxSize } = this.props
+    const { name, boxSize, style: propStyle = null } = this.props
     return (
       <TouchableWithoutFeedback onPress={this.onPress}>
         <View ref={view => {this.buttonRef = view}} style={[styles.container, {width: boxSize, height: boxSize}]}>
-          <Animated.View style={[styles.box, {opacity: this.state.animatedValue}]}>
+          <Animated.View style={[styles.box, propStyle && propStyle, {opacity: this.state.animatedValue}]}>
             <Text style={styles.icon}>{name}</Text>
           </Animated.View>
         </View>
@@ -57,6 +58,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   container: {
+    alignSelf: 'center',
+    justifyContent: 'center',
     padding,
   },
   box: {

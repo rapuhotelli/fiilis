@@ -3,7 +3,7 @@ import {Animated, LayoutChangeEvent, Text, View} from 'react-native'
 import {StyleSheet} from 'react-native'
 import FeelButton from '../components/FeelButton'
 import Screen from '../components/Screen'
-import ExpandHeader from '../components/ExpandHeader'
+import Popup from './Popup'
 
 // const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window')
 
@@ -17,28 +17,38 @@ const feels = [
   'enthused',
 ]
 
+const Page = {
+  QUESTION: 0,
+  INTENSITY: 1,
+  DONE: 2,
+}
+
 export default class Question extends React.Component {
 
   state = {
     boxSize: 0,
     selectedCoords: null,
+    selectedMood: null,
+    selectedIntensity: null,
+    page: Page.QUESTION,
   }
 
-  chooseMood = (rect: any, name: string) => {
-    console.log(rect)
-    this.setState({
-      selectedCoords: rect,
+  chooseMood = (childRef: any) => {
+    console.log(childRef)
+    childRef.buttonRef.measure((fx, fy, width, height, px, py) => {
+      const rect = {left: px + 12, top: py + 12, width: width - 24, height: width - 24}
+      this.setState({
+        page: Page.INTENSITY,
+        selectedCoords: rect,
+        selectedMood: childRef.props.name,
+      })
     })
-    /*
-    Animated.timing(
-      this.state.fadeAnim,
-      {
-        toValue: 0,
-        duration: 5000,
-      },
-    ).start()
-    */
-    // return name
+  }
+
+  chooseIntensity = (childRef: any) => {
+    this.setState({
+      selectedIntensity: childRef.props.name,
+    })
   }
 
   layout = (event: LayoutChangeEvent) => {
@@ -55,7 +65,12 @@ export default class Question extends React.Component {
         <View style={styles.grid} onLayout={this.layout}>
           {feels.map((feel) => <FeelButton key={feel} boxSize={this.state.boxSize} name={feel} onPress={this.chooseMood}/>)}
         </View>
-        {this.state.selectedCoords && <ExpandHeader origin={this.state.selectedCoords}/>}
+        {this.state.page === Page.INTENSITY && (
+          <Popup boxSize={this.state.boxSize} onPress={this.chooseIntensity} origin={this.state.selectedCoords} />
+        )}
+        {this.state.page === Page.DONE && (
+          <Popup boxSize={this.state.boxSize} onPress={this.chooseIntensity} origin={this.state.selectedCoords} />
+        )}
       </Screen>
     )
   }
