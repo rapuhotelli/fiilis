@@ -3,6 +3,7 @@ import {Animated, LayoutChangeEvent, Text, View} from 'react-native'
 import {StyleSheet} from 'react-native'
 import FeelButton from '../components/FeelButton'
 import Screen from '../components/Screen'
+import ExpandHeader from '../components/ExpandHeader'
 
 // const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window')
 
@@ -20,7 +21,7 @@ export default class Question extends React.Component {
 
   state = {
     boxSize: 0,
-    selectedCoords: {},
+    selectedCoords: null,
   }
 
   chooseMood = (rect: any, name: string) => {
@@ -48,22 +49,13 @@ export default class Question extends React.Component {
   }
 
   render() {
-    console.log(this.state.selectedCoords)
     return (
       <Screen style={styles.container}>
-        <View
-          style={
-            {
-              position: 'absolute',
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              ...this.state.selectedCoords,
-            }
-          }
-        />
 
         <View style={styles.grid} onLayout={this.layout}>
           {feels.map((feel) => <FeelButton key={feel} boxSize={this.state.boxSize} name={feel} onPress={this.chooseMood}/>)}
         </View>
+        {this.state.selectedCoords && <ExpandHeader origin={this.state.selectedCoords}/>}
       </Screen>
     )
   }

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {LayoutChangeEvent, LayoutRectangle, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native'
+import { Animated, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 
 interface Props {
   name: string,
@@ -8,15 +8,34 @@ interface Props {
   onPress: (rect: any, name: string) => void,
   boxSize: number
 }
+const padding = 12
+
 export default class FeelButton extends React.Component<Props> {
 
   // buttonRef: Ref<View> | null = null
   buttonRef: any
+  state = {
+    animatedValue: new Animated.Value(1),
+  }
+
+  componentDidMount() {
+    this.setState({
+      animatedValue: new Animated.Value(1),
+    })
+  }
 
   onPress = () => {
-    this.buttonRef.measure((fx, fy, width, height, px, py) => {
-      this.props.onPress({left: px, top: py, width, height}, this.props.name)
-    })
+    setTimeout(() => {
+      this.buttonRef.measure((fx, fy, width, height, px, py) => {
+        this.props.onPress({left: px + padding, top: py + padding, width: width - padding * 2, height: width - padding * 2}, this.props.name)
+      })
+    }, 500)
+    Animated.spring(this.state.animatedValue, {
+      toValue: 0.5,
+      bounciness: 50,
+      speed: 30,
+      useNativeDriver: true,
+    }).start()
   }
 
   render() {
@@ -24,9 +43,9 @@ export default class FeelButton extends React.Component<Props> {
     return (
       <TouchableWithoutFeedback onPress={this.onPress}>
         <View ref={view => {this.buttonRef = view}} style={[styles.container, {width: boxSize, height: boxSize}]}>
-          <View style={[styles.box]}>
+          <Animated.View style={[styles.box, {opacity: this.state.animatedValue}]}>
             <Text style={styles.icon}>{name}</Text>
-          </View>
+          </Animated.View>
         </View>
       </TouchableWithoutFeedback>
     )
@@ -38,12 +57,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   container: {
-    padding: 12,
+    padding,
   },
   box: {
     justifyContent: 'center',
     alignSelf: 'flex-start',
-    borderRadius: 10,
+    borderRadius: 20,
     width: '100%',
     height: '100%',
     borderWidth: 6,
