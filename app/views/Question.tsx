@@ -2,6 +2,7 @@ import * as React from 'react'
 import {Animated, LayoutChangeEvent, Text, View} from 'react-native'
 import {StyleSheet} from 'react-native'
 import FeelButton from '../components/FeelButton'
+import PopupComponent from '../components/Popup'
 import Screen from '../components/Screen'
 import Popup from './Popup'
 
@@ -46,8 +47,14 @@ export default class Question extends React.Component {
   }
 
   chooseIntensity = (childRef: any) => {
-    this.setState({
-      selectedIntensity: childRef.props.name,
+    console.log('choosing intensity')
+    childRef.buttonRef.measure((fx, fy, width, height, px, py) => {
+      const rect = {left: px + 12, top: py + 12, width: width - 24, height: width - 24}
+      this.setState({
+        page: Page.DONE,
+        selectedCoords: rect,
+        selectedIntensity: childRef.props.name,
+      })
     })
   }
 
@@ -65,17 +72,31 @@ export default class Question extends React.Component {
         <View style={styles.grid} onLayout={this.layout}>
           {feels.map((feel) => <FeelButton key={feel} boxSize={this.state.boxSize} name={feel} onPress={this.chooseMood}/>)}
         </View>
-        {this.state.page === Page.INTENSITY && (
-          <Popup boxSize={this.state.boxSize} onPress={this.chooseIntensity} origin={this.state.selectedCoords} />
+        {this.state.page > Page.QUESTION && (
+          <PopupComponent origin={this.state.selectedCoords}>
+            <FeelButton style={{borderColor: 'white'}} name='food' onPress={this.chooseIntensity} boxSize={this.state.boxSize}/>
+            <FeelButton style={{borderColor: 'white'}} name='bar' onPress={this.chooseIntensity} boxSize={this.state.boxSize}/>
+            <FeelButton style={{borderColor: 'white'}} name='baz' onPress={this.chooseIntensity} boxSize={this.state.boxSize}/>
+          </PopupComponent>
+
         )}
-        {this.state.page === Page.DONE && (
-          <Popup boxSize={this.state.boxSize} onPress={this.chooseIntensity} origin={this.state.selectedCoords} />
+        {this.state.page > Page.INTENSITY && (
+          <PopupComponent style={{backgroundColor: 'white'}} origin={this.state.selectedCoords}>
+            <Text>Thanks mate</Text>
+          </PopupComponent>
         )}
       </Screen>
     )
   }
 }
 /*
+          <Popup boxSize={this.state.boxSize} onPress={this.chooseIntensity} origin={this.state.selectedCoords} />
+
+      <PopupComponent boxSize={this.state.boxSize} onPress={this.chooseIntensity} origin={this.state.selectedCoords} />
+        <FeelButton style={{borderColor: 'white'}} name="herp" onPress={() => {}} boxSize={boxSize}/>
+        <FeelButton style={{borderColor: 'white'}} name="herp" onPress={() => {}} boxSize={boxSize}/>
+        <FeelButton style={{borderColor: 'white'}} name="herp" onPress={() => {}} boxSize={boxSize}/>
+
         <Text>Valitse fiilis</Text>
         <FeelButton name="woo" onPress={this.chooseMood}/>
 */
