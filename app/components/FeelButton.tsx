@@ -9,7 +9,8 @@ interface Props {
   // onPress: (rect: any, name: string) => void,
   onPress: (thisRef: any) => void,
   boxSize: number,
-  style?: ViewStyle
+  style?: ViewStyle,
+  clickable?: boolean
 }
 const padding = 12
 
@@ -28,15 +29,16 @@ export default class FeelButton extends React.Component<Props> {
   }
 
   onPress = () => {
-    setTimeout(() => {
+    const { clickable } = this.props
+    if (clickable) {
       this.props.onPress(this)
-    }, 2000)
-    Animated.spring(this.state.animatedValue, {
-      toValue: 0.5,
-      bounciness: 50,
-      speed: 30,
-      useNativeDriver: true,
-    }).start()
+      Animated.spring(this.state.animatedValue, {
+        toValue: 0.5,
+        bounciness: 50,
+        speed: 30,
+        useNativeDriver: true,
+      }).start(() => this.state.animatedValue.setValue(1))
+    }
   }
 
   render() {

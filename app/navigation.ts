@@ -1,19 +1,25 @@
-import {createStackNavigator, NavigationScreenProps} from 'react-navigation'
-import Question from './views/Question'
+import {createBottomTabNavigator, createStackNavigator} from 'react-navigation'
 
-export default createStackNavigator({
-  Question: {
-    screen: Question,
+import Intensity from './views/Intensity'
+import Mood from './views/Mood'
+import Statistics from './views/Statistics'
+
+const QuestionStack = createStackNavigator({
+  MoodQuestion: {
+    screen: Mood,
   },
-
-  /*
-  Statistic: {
-    screen: RentalList,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Rental list'
-    })
-  }
-  */
+  IntensityQuestion: {
+    screen: Intensity,
+  },
 }, {
-  headerMode: 'none'
+  headerMode: 'none',
+})
+
+export default createBottomTabNavigator({
+  Home: {
+    screen: QuestionStack,
+  },
+  Statistics: {
+    screen: Statistics,
+  },
 })
