@@ -1,60 +1,54 @@
 import * as React from 'react'
 
-const initialState = {
+interface State {
+  selectedMood: string | null
+  selectedIntensity: string | null
+  dispatch: (action: Action) => void
+}
+
+const initialState: State = {
   selectedMood: null,
   selectedIntensity: null,
+  dispatch: () => {},
 }
 
 const Context = React.createContext(initialState)
 
-type State = typeof initialState
-export class Provider extends React.Component<State> {
-  state = {
-    ...initialState,
-  }
+interface Action {
+  type: string,
+  payload: any
+}
 
-  actions = {
-    setMood: (name: string) => {
-      // this.setState({selectedMood: name})
-      if (this.state.selectedMood !== name) {
-        this.setState(state => {
-          return {selectedMood: name}
-        })
+type Reducer = (state: any, action: Action) => State
+
+const reducer: Reducer = (state, action) => {
+  const { payload } = action
+  switch (action.type) {
+    case 'SET_MOOD':
+      return {
+        ...state,
+        selectedMood: payload,
       }
-    },
-    setIntensity: (name: string) => {
-      this.setState({selectedIntensity: name})
+    default:
+      return state
+  }
+}
+
+export class Provider extends React.Component<State> {
+  readonly state: Readonly<State> = {
+    ...initialState,
+    dispatch: (action: Action) => {
+      this.setState(state => reducer(state, action))
     },
   }
 
   render() {
-    console.log('state is now:', this.state)
-    const store = {
-      state: this.state,
-      actions: this.actions,
-    }
+    console.log('state is now', this.state)
     return (
-      <Context.Provider value={store}>
+      <Context.Provider value={this.state}>
         {this.props.children}
       </Context.Provider>
     )
   }
 }
-
-interface ConsumerProps {
-  children: Function,
-}
-export class Consumer extends React.Component<ConsumerProps> {
-  getActions = (store) => {
-    return store.actions
-  }
-  render() {
-    const { children = () => {} } = this.props
-
-    return (
-      <Context.Consumer>
-        {store => children(this.getActions(store))}
-      </Context.Consumer>
-    )
-  }
-}
+export const Consumer = Context.Consumer

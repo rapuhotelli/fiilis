@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Animated, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import { ViewStyle } from 'react-native'
+import { Consumer } from '../store'
 
 interface Props {
   name: string,
@@ -44,13 +45,24 @@ export default class FeelButton extends React.Component<Props> {
   render() {
     const { name, boxSize, style: propStyle = null } = this.props
     return (
-      <TouchableWithoutFeedback onPress={this.onPress}>
-        <View ref={view => {this.buttonRef = view}} style={[styles.container, {width: boxSize, height: boxSize}]}>
-          <Animated.View style={[styles.box, propStyle && propStyle, {opacity: this.state.animatedValue}]}>
-            <Text style={styles.icon}>{name}</Text>
-          </Animated.View>
-        </View>
-      </TouchableWithoutFeedback>
+      <Consumer>
+        {({ dispatch }) => {
+          return (
+            <TouchableWithoutFeedback
+              onPress={() => {
+                this.onPress()
+                dispatch({ type: 'SET_MOOD', payload: name })
+              }}
+            >
+              <View ref={view => {this.buttonRef = view}} style={[styles.container, {width: boxSize, height: boxSize}]}>
+                <Animated.View style={[styles.box, propStyle && propStyle, {opacity: this.state.animatedValue}]}>
+                  <Text style={styles.icon}>{name}</Text>
+                </Animated.View>
+              </View>
+            </TouchableWithoutFeedback>
+          )
+        }}
+      </Consumer>
     )
   }
 }

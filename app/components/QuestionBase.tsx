@@ -3,7 +3,6 @@ import {LayoutChangeEvent, View} from 'react-native'
 import {StyleSheet} from 'react-native'
 import FeelButton from '../components/FeelButton'
 import Screen from '../components/Screen'
-import { Consumer } from '../store'
 
 interface Props {
   navigation: any,
@@ -51,9 +50,6 @@ export default class MoodQuestion extends React.Component<Props, State> {
       <Screen style={styles.container}>
         <View style={styles.grid} onLayout={this.layout}>
           {this.state.boxSize > 0 && questionOptions.map((opt) => <FeelButton clickable={this.state.transitioning === false} key={opt} boxSize={this.state.boxSize} name={opt} onPress={this.chooseMood}/>)}
-          <Consumer>
-            {actions => actions.setMood('woohoo')}
-          </Consumer>
         </View>
       </Screen>
     )
