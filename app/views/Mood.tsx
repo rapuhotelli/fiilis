@@ -1,5 +1,6 @@
 import * as React from 'react'
 import QuestionBase from '../components/QuestionBase'
+import {Consumer, Dispatch} from '../store'
 
 const options = [
   'happy',
@@ -12,14 +13,25 @@ const options = [
 interface Props {
   navigation: any
 }
+
 const Mood = (props: Props) => {
-  const onSelect = () => props.navigation.navigate('IntensityQuestion')
-  return <QuestionBase
-    onSelect={onSelect}
-    navigation={props.navigation}
-    questionOptions={options}
-    questionName='mood'
-  />
+  const onSelect = (dispatch: Dispatch, name: string) => {
+    dispatch({ type: 'SET_MOOD', payload: name })
+    props.navigation.navigate('IntensityQuestion')
+  }
+
+  return (
+    <Consumer>
+      {({ dispatch }) => {
+        return (<QuestionBase
+          onSelect={(name) => onSelect(dispatch, name)}
+          navigation={props.navigation}
+          questionOptions={options}
+          questionName='mood'
+        />)
+      }}
+    </Consumer>
+  )
 }
 
 export default Mood

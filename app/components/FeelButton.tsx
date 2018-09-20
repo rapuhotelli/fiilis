@@ -1,14 +1,11 @@
 import * as React from 'react'
 import { Animated, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
 import { ViewStyle } from 'react-native'
-import { Consumer } from '../store'
 
 interface Props {
   name: string,
   image?: string,
-  // onPress: (rect: LayoutRectangle, name: string) => void,
-  // onPress: (rect: any, name: string) => void,
-  onPress: (thisRef: any) => void,
+  onPress: (ref: any) => void,
   boxSize: number,
   style?: ViewStyle,
   clickable?: boolean
@@ -17,7 +14,6 @@ const padding = 12
 
 export default class FeelButton extends React.Component<Props> {
 
-  // buttonRef: Ref<View> | null = null
   buttonRef: any
   state = {
     animatedValue: new Animated.Value(1),
@@ -30,9 +26,9 @@ export default class FeelButton extends React.Component<Props> {
   }
 
   onPress = () => {
-    const { clickable } = this.props
+    const { clickable, name } = this.props
     if (clickable) {
-      this.props.onPress(this)
+      this.props.onPress(name)
       Animated.spring(this.state.animatedValue, {
         toValue: 0.5,
         bounciness: 50,
@@ -45,24 +41,13 @@ export default class FeelButton extends React.Component<Props> {
   render() {
     const { name, boxSize, style: propStyle = null } = this.props
     return (
-      <Consumer>
-        {({ dispatch }) => {
-          return (
-            <TouchableWithoutFeedback
-              onPress={() => {
-                this.onPress()
-                dispatch({ type: 'SET_MOOD', payload: name })
-              }}
-            >
+            <TouchableWithoutFeedback onPress={this.onPress}>
               <View ref={view => {this.buttonRef = view}} style={[styles.container, {width: boxSize, height: boxSize}]}>
                 <Animated.View style={[styles.box, propStyle && propStyle, {opacity: this.state.animatedValue}]}>
                   <Text style={styles.icon}>{name}</Text>
                 </Animated.View>
               </View>
             </TouchableWithoutFeedback>
-          )
-        }}
-      </Consumer>
     )
   }
 }

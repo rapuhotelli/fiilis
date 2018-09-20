@@ -1,9 +1,11 @@
 import * as React from 'react'
 
+export type Dispatch = (action: Action) => void
+
 interface State {
   selectedMood: string | null
   selectedIntensity: string | null
-  dispatch: (action: Action) => void
+  dispatch: Dispatch
 }
 
 const initialState: State = {
@@ -29,12 +31,21 @@ const reducer: Reducer = (state, action) => {
         ...state,
         selectedMood: payload,
       }
+    case 'SET_INTENSITY':
+      return {
+        ...state,
+        selectedIntensity: payload,
+      }
     default:
       return state
   }
 }
 
-export class Provider extends React.Component<State> {
+interface Props {
+  children: JSX.Element
+}
+
+export class Provider extends React.Component<Props, State> {
   readonly state: Readonly<State> = {
     ...initialState,
     dispatch: (action: Action) => {

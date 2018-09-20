@@ -8,7 +8,7 @@ interface Props {
   navigation: any,
   questionOptions: string[],
   questionName: string,
-  onSelect: () => void
+  onSelect: (ref: any) => void
 }
 
 interface State {
@@ -25,7 +25,7 @@ export default class MoodQuestion extends React.Component<Props, State> {
     transitioning: false,
   }
 
-  chooseMood = (childRef: any) => {
+  buttonSelection = (value: string) => {
     this.setState({
       transitioning: true,
     })
@@ -33,7 +33,7 @@ export default class MoodQuestion extends React.Component<Props, State> {
       this.setState({
         transitioning: false,
       })
-      this.props.onSelect()
+      this.props.onSelect(value)
     }, 1000)
   }
 
@@ -49,7 +49,15 @@ export default class MoodQuestion extends React.Component<Props, State> {
     return (
       <Screen style={styles.container}>
         <View style={styles.grid} onLayout={this.layout}>
-          {this.state.boxSize > 0 && questionOptions.map((opt) => <FeelButton clickable={this.state.transitioning === false} key={opt} boxSize={this.state.boxSize} name={opt} onPress={this.chooseMood}/>)}
+          {this.state.boxSize > 0 && questionOptions.map((opt) => (
+              <FeelButton
+                clickable={this.state.transitioning === false}
+                key={opt}
+                boxSize={this.state.boxSize}
+                name={opt}
+                onPress={this.buttonSelection}
+              />
+          ))}
         </View>
       </Screen>
     )
