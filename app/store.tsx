@@ -18,7 +18,7 @@ const Context = React.createContext(initialState)
 
 interface Action {
   type: string,
-  payload: any
+  payload?: any
 }
 
 type Reducer = (state: any, action: Action) => State
@@ -26,6 +26,8 @@ type Reducer = (state: any, action: Action) => State
 const reducer: Reducer = (state, action) => {
   const { payload } = action
   switch (action.type) {
+    case 'RESET':
+      return initialState
     case 'SET_MOOD':
       return {
         ...state,
@@ -54,7 +56,6 @@ export class Provider extends React.Component<Props, State> {
   }
 
   render() {
-    console.log('state is now', this.state)
     return (
       <Context.Provider value={this.state}>
         {this.props.children}
@@ -62,4 +63,17 @@ export class Provider extends React.Component<Props, State> {
     )
   }
 }
+
 export const Consumer = Context.Consumer
+
+export const connectNavigationScreen = (Component: any) => (props: any) => (
+  <Consumer>
+    {({dispatch, ...state}) => <Component dispatch={dispatch} state={state} {...props} />}
+  </Consumer>
+)
+
+export const connect = (Component: any) => (props: any) => (
+  <Consumer>
+    {({dispatch, ...state}) => <Component dispatch={dispatch} state={state} {...props} />}
+  </Consumer>
+)

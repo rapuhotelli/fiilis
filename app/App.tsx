@@ -9,13 +9,17 @@
 import * as React from 'react'
 // import { StyleSheet } from 'react-native';
 import MainNav from './navigation'
-import { Provider } from './store'
+import { Provider, Consumer } from './store'
+
+
 
 export default class App extends React.Component<{}> {
   render() {
     return (
       <Provider>
-        <MainNav />
+        <Consumer>
+          {({dispatch}) => <MainNav screenProps={{dispatch}} />}
+        </Consumer>
       </Provider>
     )
   }

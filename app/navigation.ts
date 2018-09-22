@@ -1,15 +1,16 @@
 import {createBottomTabNavigator, createStackNavigator} from 'react-navigation'
 
+import { connectNavigationScreen } from './store'
 import Intensity from './views/Intensity'
 import Mood from './views/Mood'
 import Statistics from './views/Statistics'
 
 const QuestionStack = createStackNavigator({
   MoodQuestion: {
-    screen: Mood,
+    screen: connectNavigationScreen(Mood),
   },
   IntensityQuestion: {
-    screen: Intensity,
+    screen: connectNavigationScreen(Intensity),
   },
 }, {
   headerMode: 'none',

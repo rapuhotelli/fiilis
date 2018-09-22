@@ -10,16 +10,20 @@ const options = [
 ]
 
 interface Props {
-  navigation: any
+  navigation: any,
+  dispatch: Dispatch,
 }
 const Intensity = (props: Props) => {
+
   const onSelect = (dispatch: Dispatch, name: string) => {
     dispatch({ type: 'SET_INTENSITY', payload: name })
+    // Reset navigation stack so that back button takes us to Question, not intensity
     const resetAction = StackActions.reset({
       index: 0,
       actions: [NavigationActions.navigate({ routeName: 'MoodQuestion' })],
     })
     props.navigation.dispatch(resetAction)
+    dispatch({ type: 'RESET' })
     props.navigation.navigate('Statistics')
   }
 

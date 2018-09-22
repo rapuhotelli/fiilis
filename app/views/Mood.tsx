@@ -11,27 +11,48 @@ const options = [
 ]
 
 interface Props {
-  navigation: any
+  navigation: any,
+  dispatch: Dispatch
 }
 
-const Mood = (props: Props) => {
-  const onSelect = (dispatch: Dispatch, name: string) => {
-    dispatch({ type: 'SET_MOOD', payload: name })
-    props.navigation.navigate('IntensityQuestion')
+// const Mood = (props: Props) => {
+class Mood extends React.Component<Props> {
+
+  private didFocusSub: any
+
+  constructor(props: Props) {
+    super(props)
+    this.didFocusSub = this.props.navigation.addListener(
+      'didFocus',
+      () => {
+        props.dispatch({ type: 'RESET' })
+      },
+    )
   }
 
-  return (
-    <Consumer>
-      {({ dispatch }) => {
-        return (<QuestionBase
-          onSelect={(name) => onSelect(dispatch, name)}
-          navigation={props.navigation}
-          questionOptions={options}
-          questionName='mood'
-        />)
-      }}
-    </Consumer>
-  )
+  onSelect = (dispatch: Dispatch, name: string) => {
+    dispatch({ type: 'SET_MOOD', payload: name })
+    this.props.navigation.navigate('IntensityQuestion')
+  }
+
+  componentWillUnmount() {
+    this.didFocusSub.remove()
+  }
+
+  render() {
+    return (
+      <Consumer>
+        {({dispatch}) => {
+          return (<QuestionBase
+            onSelect={(name) => this.onSelect(dispatch, name)}
+            navigation={this.props.navigation}
+            questionOptions={options}
+            questionName='mood'
+          />)
+        }}
+      </Consumer>
+    )
+  }
 }
 
 export default Mood
