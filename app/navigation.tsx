@@ -1,5 +1,5 @@
-import {createBottomTabNavigator, createStackNavigator} from 'react-navigation'
-
+import * as React from 'react'
+import {createBottomTabNavigator, createStackNavigator, TabBarBottom } from 'react-navigation'
 import { connectNavigationScreen } from './store'
 import Intensity from './views/Intensity'
 import Mood from './views/Mood'
@@ -19,6 +19,11 @@ const QuestionStack = createStackNavigator({
 const TabNavigator = createBottomTabNavigator({
   Home: {
     screen: QuestionStack,
+    navigationOptions: {
+      tabBarOnPress: (arg) => {
+        console.log('onPress', arg)
+      }, 
+    },
   },
   Statistics: {
     screen: Statistics,
