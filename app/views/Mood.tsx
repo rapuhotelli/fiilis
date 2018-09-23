@@ -1,6 +1,6 @@
 import * as React from 'react'
 import QuestionBase from '../components/QuestionBase'
-import {Consumer, Dispatch} from '../store'
+import {actions, Dispatch} from '../store'
 
 const options = [
   'happy',
@@ -25,13 +25,14 @@ class Mood extends React.Component<Props> {
     this.didFocusSub = this.props.navigation.addListener(
       'didFocus',
       () => {
-        props.dispatch({ type: 'RESET' })
+        props.dispatch({ type: actions.RESET })
       },
     )
   }
 
-  onSelect = (dispatch: Dispatch, name: string) => {
-    dispatch({ type: 'SET_MOOD', payload: name })
+  onSelect = (name: string) => {
+    console.log('onSelect, should dispatch:', this.props.dispatch)
+    this.props.dispatch({ type: actions.SET_MOOD, payload: name })
     this.props.navigation.navigate('IntensityQuestion')
   }
 
@@ -41,16 +42,12 @@ class Mood extends React.Component<Props> {
 
   render() {
     return (
-      <Consumer>
-        {({dispatch}) => {
-          return (<QuestionBase
-            onSelect={(name) => this.onSelect(dispatch, name)}
-            navigation={this.props.navigation}
-            questionOptions={options}
-            questionName='mood'
-          />)
-        }}
-      </Consumer>
+      <QuestionBase
+          onSelect={(name) => this.onSelect(name)}
+          navigation={this.props.navigation}
+          questionOptions={options}
+          questionName='mood'
+      />
     )
   }
 }

@@ -9,9 +9,7 @@
 import * as React from 'react'
 // import { StyleSheet } from 'react-native';
 import MainNav from './navigation'
-import { Provider, Consumer } from './store'
-
-
+import { Consumer, Provider } from './store'
 
 export default class App extends React.Component<{}> {
   render() {
