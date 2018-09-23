@@ -1,13 +1,45 @@
 import * as React from 'react'
-import {Text, View} from 'react-native'
-import {StyleSheet} from 'react-native'
+import {BackHandler, StyleSheet, Text, View} from 'react-native'
+
+import {NavigationActions, NavigationEventSubscription, NavigationScreenProp, StackActions } from 'react-navigation'
 import Screen from '../components/Screen'
 
 interface Props {
-  navigation: any
+  navigation: NavigationScreenProp<{}>
 }
 
-export default class Question extends React.Component<Props> {
+export default class Statistics extends React.Component<Props> {
+  private willBlurSub: NavigationEventSubscription
+  private didFocusSub: NavigationEventSubscription
+  constructor(props: Props) {
+    super(props)
+    this.willBlurSub = this.props.navigation.addListener(
+      'willBlur',
+      () => {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
+      },
+    )
+    this.didFocusSub = this.props.navigation.addListener(
+      'didFocus',
+      () => {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress)
+      },
+    )
+  }
+
+  handleBackPress = () => {
+    console.log('handle back')
+    return true
+  }
+
+  componentWillUnmount() {
+    console.log('should unmount')
+    this.willBlurSub.remove()
+    this.didFocusSub.remove()
+
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
+  }
+
   render() {
     return (
       <Screen style={styles.container}>

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { NavigationActions, NavigationEventSubscription, NavigationScreenProp, StackActions } from 'react-navigation'
 import QuestionBase from '../components/QuestionBase'
 import {actions, Dispatch} from '../store'
 
@@ -11,14 +12,13 @@ const options = [
 ]
 
 interface Props {
-  navigation: any,
+  navigation: NavigationScreenProp<{}>,
   dispatch: Dispatch
 }
 
-// const Mood = (props: Props) => {
 class Mood extends React.Component<Props> {
 
-  private didFocusSub: any
+  private didFocusSub: NavigationEventSubscription
 
   constructor(props: Props) {
     super(props)
@@ -31,7 +31,6 @@ class Mood extends React.Component<Props> {
   }
 
   onSelect = (name: string) => {
-    console.log('onSelect, should dispatch:', this.props.dispatch)
     this.props.dispatch({ type: actions.SET_MOOD, payload: name })
     this.props.navigation.navigate('IntensityQuestion')
   }

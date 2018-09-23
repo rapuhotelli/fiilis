@@ -12,13 +12,7 @@ export interface IState {
 const initialState: IState = {
   selectedMood: null,
   selectedIntensity: null,
-  dispatch: function (action: IAction) {
-    console.log('dispatching', action)
-    this.setState(state => reducer(state, action), () => {
-      console.log('callback')
-      this.devToolSend(action)
-    })
-  },
+  dispatch: () => {console.warn('dispatch undefined')},
 }
 
 const Context = React.createContext(initialState)
@@ -71,18 +65,22 @@ export class Provider extends React.Component<Props, IState> {
 
   readonly state: Readonly<IState> = {
     ...initialState,
-    dispatch: (action: IAction) => {
-      console.log('dispatching', action)
-      this.setState(state => reducer(state, action), () => {
-        console.log('callback')
-        this.devToolSend(action)
-      })
-    },
+  }
+
+  dispatch = (action: IAction) => {
+    this.setState(state => reducer(state, action), () => {
+      console.log('callback')
+      this.devToolSend(action)
+    })
   }
 
   render() {
+    const value = {
+      ...this.state,
+      dispatch: this.dispatch,
+    }
     return (
-      <Context.Provider value={this.state}>
+      <Context.Provider value={value}>
         {this.props.children}
       </Context.Provider>
     )

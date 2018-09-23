@@ -16,7 +16,7 @@ const QuestionStack = createStackNavigator({
   headerMode: 'none',
 })
 
-export default createBottomTabNavigator({
+const TabNavigator = createBottomTabNavigator({
   Home: {
     screen: QuestionStack,
   },
@@ -24,3 +24,5 @@ export default createBottomTabNavigator({
     screen: Statistics,
   },
 })
+
+export default TabNavigator
