@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { NavigationActions, NavigationEventSubscription, NavigationScreenProp, StackActions } from 'react-navigation'
+import { NavigationEventSubscription, NavigationScreenProp } from 'react-navigation'
 import QuestionBase from '../components/QuestionBase'
 import {actions, Dispatch} from '../store'
 

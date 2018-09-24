@@ -55,7 +55,7 @@ interface Props {
 }
 
 export class Provider extends React.Component<Props, IState> {
-  private devToolSend: (action: IAction) => void
+  private readonly devToolSend: (action: IAction) => void
 
   constructor(props: Props) {
     super(props)

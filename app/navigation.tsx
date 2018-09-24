@@ -24,6 +24,7 @@ const QuestionStack = createStackNavigator({
 const TabNavigator = createBottomTabNavigator({
   Home: {
     screen: QuestionStack,
+    // Reset stack on Home press
     navigationOptions: {
       tabBarOnPress: (arg: {navigation: NavigationScreenProp<{}>}) => {
         const resetAction = StackActions.reset({
