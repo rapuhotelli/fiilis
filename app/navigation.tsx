@@ -1,5 +1,10 @@
-import * as React from 'react'
-import {createBottomTabNavigator, createStackNavigator, TabBarBottom } from 'react-navigation'
+import {
+  createBottomTabNavigator,
+  createStackNavigator,
+  NavigationActions,
+  NavigationScreenProp,
+  StackActions
+} from 'react-navigation'
 import { connectNavigationScreen } from './store'
 import Intensity from './views/Intensity'
 import Mood from './views/Mood'
@@ -20,9 +25,13 @@ const TabNavigator = createBottomTabNavigator({
   Home: {
     screen: QuestionStack,
     navigationOptions: {
-      tabBarOnPress: (arg) => {
-        console.log('onPress', arg)
-      }, 
+      tabBarOnPress: (arg: {navigation: NavigationScreenProp<{}>}) => {
+        const resetAction = StackActions.reset({
+          index: 0,
+          actions: [NavigationActions.navigate({ routeName: 'MoodQuestion' })],
+        });
+        arg.navigation.dispatch(resetAction)
+      },
     },
   },
   Statistics: {
