@@ -1,7 +1,9 @@
 import * as React from 'react'
-import { NavigationEventSubscription, NavigationScreenProp } from 'react-navigation'
+import { NavigationEventSubscription } from 'react-navigation'
 import QuestionBase from '../components/QuestionBase'
-import {actions, Dispatch} from '../store'
+import {actions} from '../store'
+
+import { ScreenProps } from '../commonTypes'
 
 const options = [
   'happy',
@@ -11,16 +13,11 @@ const options = [
   'enthused!',
 ]
 
-interface Props {
-  navigation: NavigationScreenProp<{}>,
-  dispatch: Dispatch
-}
-
-class Mood extends React.Component<Props> {
+class Mood extends React.Component<ScreenProps> {
 
   private didFocusSub: NavigationEventSubscription
 
-  constructor(props: Props) {
+  constructor(props: ScreenProps) {
     super(props)
     this.didFocusSub = this.props.navigation.addListener(
       'didFocus',

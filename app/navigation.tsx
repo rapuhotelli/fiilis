@@ -3,11 +3,13 @@ import {
   createStackNavigator,
   NavigationActions,
   NavigationScreenProp,
-  StackActions
+  StackActions,
 } from 'react-navigation'
 import { connectNavigationScreen } from './store'
+
 import Intensity from './views/Intensity'
 import Mood from './views/Mood'
+import Origin from './views/Origin'
 import Statistics from './views/Statistics'
 
 const QuestionStack = createStackNavigator({
@@ -16,6 +18,9 @@ const QuestionStack = createStackNavigator({
   },
   IntensityQuestion: {
     screen: connectNavigationScreen(Intensity),
+  },
+  Origin: {
+    screen: connectNavigationScreen(Origin),
   },
 }, {
   headerMode: 'none',
@@ -30,7 +35,7 @@ const TabNavigator = createBottomTabNavigator({
         const resetAction = StackActions.reset({
           index: 0,
           actions: [NavigationActions.navigate({ routeName: 'MoodQuestion' })],
-        });
+        })
         arg.navigation.dispatch(resetAction)
       },
     },

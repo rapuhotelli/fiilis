@@ -4,16 +4,17 @@ import QuestionBase from '../components/QuestionBase'
 import {actions, Consumer, Dispatch} from '../store'
 
 const options = [
-  'major',
-  'medium',
-  'minor',
+  'people',
+  'event',
+  'music',
+  'body',
 ]
 
-const Intensity = (props: ScreenProps) => {
+const Origin = (props: ScreenProps) => {
 
   const onSelect = (dispatch: Dispatch, name: string) => {
-    dispatch({ type: actions.SET_INTENSITY, payload: name })
-    props.navigation.navigate('Origin')
+    dispatch({ type: actions.SET_ORIGIN, payload: name })
+    props.navigation.navigate('Statistics')
   }
 
   return (
@@ -23,11 +24,11 @@ const Intensity = (props: ScreenProps) => {
           onSelect={(name) => onSelect(dispatch, name)}
           navigation={props.navigation}
           questionOptions={options}
-          questionName='intensity'
+          questionName='origin'
         />)
       }}
     </Consumer>
   )
 }
 
-export default Intensity
+export default Origin

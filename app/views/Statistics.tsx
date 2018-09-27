@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {BackHandler, StyleSheet, Text, View} from 'react-native'
 
-import {NavigationActions, NavigationEventSubscription, NavigationScreenProp, StackActions } from 'react-navigation'
+import { NavigationEventSubscription, NavigationScreenProp } from 'react-navigation'
 import Screen from '../components/Screen'
 
 interface Props {

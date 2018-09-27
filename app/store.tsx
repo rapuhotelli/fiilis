@@ -1,17 +1,13 @@
 import * as React from 'react'
+import {IState} from './commonTypes'
 import devtools from './devtools'
 
 export type Dispatch = (action: IAction) => void
 
-export interface IState {
-  selectedMood: string | null
-  selectedIntensity: string | null
-  dispatch: Dispatch
-}
-
 const initialState: IState = {
   selectedMood: null,
   selectedIntensity: null,
+  selectedOrigin: null,
   dispatch: () => {console.warn('dispatch undefined')},
 }
 
@@ -28,6 +24,7 @@ export const actions = {
   RESET: 'fiilis/reset',
   SET_MOOD: 'fiilis/setMood',
   SET_INTENSITY: 'fiilis/setIntensity',
+  SET_ORIGIN: 'fiilis/setOrigin',
 }
 
 const reducer: Reducer = (state, action) => {
@@ -44,6 +41,11 @@ const reducer: Reducer = (state, action) => {
       return {
         ...state,
         selectedIntensity: payload,
+      }
+    case actions.SET_ORIGIN:
+      return {
+        ...state,
+        selectedOrigin: payload,
       }
     default:
       return state
@@ -69,7 +71,6 @@ export class Provider extends React.Component<Props, IState> {
 
   dispatch = (action: IAction) => {
     this.setState(state => reducer(state, action), () => {
-      console.log('callback')
       this.devToolSend(action)
     })
   }
@@ -89,13 +90,7 @@ export class Provider extends React.Component<Props, IState> {
 
 export const Consumer = Context.Consumer
 
-export const connectNavigationScreen = (Component: any) => (props: any) => (
-  <Consumer>
-    {({dispatch, ...state}) => <Component dispatch={dispatch} state={state} {...props} />}
-  </Consumer>
-)
-
-export const connect = (Component: any) => (props: any) => (
+export const connectNavigationScreen = (Component: React.ComponentType) => (props: any) => (
   <Consumer>
     {({dispatch, ...state}) => <Component dispatch={dispatch} state={state} {...props} />}
   </Consumer>
