@@ -66,7 +66,6 @@ export default class MoodQuestion extends React.Component<Props, State> {
 
 const styles = StyleSheet.create({
   grid: {
-    flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     width: '100%',

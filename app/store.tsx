@@ -90,7 +90,7 @@ export class Provider extends React.Component<Props, IState> {
 
 export const Consumer = Context.Consumer
 
-export const connectNavigationScreen = (Component: React.ComponentType) => (props: any) => (
+export const connectNavigationScreen = (Component: any) => (props: any) => (
   <Consumer>
     {({dispatch, ...state}) => <Component dispatch={dispatch} state={state} {...props} />}
   </Consumer>

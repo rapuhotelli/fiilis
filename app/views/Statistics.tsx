@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {BackHandler, StyleSheet, Text, View} from 'react-native'
-
+import { goHomeAndReset } from '../navigation'
 import { NavigationEventSubscription, NavigationScreenProp } from 'react-navigation'
 import Screen from '../components/Screen'
 
@@ -28,7 +28,7 @@ export default class Statistics extends React.Component<Props> {
   }
 
   handleBackPress = () => {
-    console.log('handle back')
+    goHomeAndReset(this.props.navigation)
     return true
   }
 

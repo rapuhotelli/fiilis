@@ -31,18 +31,20 @@ const TabNavigator = createBottomTabNavigator({
     screen: QuestionStack,
     // Reset stack on Home press
     navigationOptions: {
-      tabBarOnPress: (arg: {navigation: NavigationScreenProp<{}>}) => {
-        const resetAction = StackActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({ routeName: 'MoodQuestion' })],
-        })
-        arg.navigation.dispatch(resetAction)
-      },
+      tabBarOnPress: (arg: {navigation: NavigationScreenProp<{}>}) => goHomeAndReset(arg.navigation),
     },
   },
   Statistics: {
     screen: Statistics,
   },
 })
+
+export const goHomeAndReset = (navigation: NavigationScreenProp<{}>) => {
+  const resetAction = StackActions.reset({
+    index: 0,
+    actions: [NavigationActions.navigate({ routeName: 'MoodQuestion' })],
+  })
+  navigation.dispatch(resetAction)
+}
 
 export default TabNavigator

@@ -11,6 +11,7 @@ const options = [
   'sehnsucht',
   'defeat',
   'enthused!',
+  'test',
 ]
 
 class Mood extends React.Component<ScreenProps> {
