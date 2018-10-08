@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Animated, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ViewStyle } from 'react-native'
 
 interface Props {
@@ -15,39 +15,29 @@ const padding = 12
 export default class FeelButton extends React.Component<Props> {
 
   buttonRef: any
-  state = {
-    animatedValue: new Animated.Value(1),
-  }
 
   componentDidMount() {
     this.setState({
-      animatedValue: new Animated.Value(1),
+      animatedValue: new Animated.Value(0),
     })
   }
 
   onPress = () => {
-    const { clickable, name } = this.props
-    if (clickable) {
-      this.props.onPress(name)
-      Animated.spring(this.state.animatedValue, {
-        toValue: 0.5,
-        bounciness: 50,
-        speed: 30,
-        useNativeDriver: true,
-      }).start(() => this.state.animatedValue.setValue(1))
-    }
+    console.log('feelbutton onpress')
+    const { onPress, name } = this.props
+    onPress(name)
   }
 
   render() {
     const { name, boxSize, style: propStyle = null } = this.props
     return (
-            <TouchableWithoutFeedback onPress={this.onPress}>
-              <View ref={view => {this.buttonRef = view}} style={[styles.container, {width: boxSize, height: boxSize}]}>
-                <Animated.View style={[styles.box, propStyle && propStyle, {opacity: this.state.animatedValue}]}>
-                  <Text style={styles.icon}>{name}</Text>
-                </Animated.View>
-              </View>
-            </TouchableWithoutFeedback>
+      <TouchableOpacity onPress={this.onPress}>
+        <View ref={view => {this.buttonRef = view}} style={[styles.container, {width: boxSize, height: boxSize}]}>
+          <View style={[styles.box, propStyle && propStyle]}>
+            <Text style={styles.icon}>{name}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
     )
   }
 }

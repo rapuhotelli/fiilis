@@ -14,7 +14,6 @@ interface Props {
 interface State {
   boxSize: number,
   selectedMood: string | null,
-  transitioning: boolean,
 }
 
 export default class MoodQuestion extends React.Component<Props, State> {
@@ -22,19 +21,10 @@ export default class MoodQuestion extends React.Component<Props, State> {
   state = {
     boxSize: 0,
     selectedMood: null,
-    transitioning: false,
   }
 
   buttonSelection = (value: string) => {
-    this.setState({
-      transitioning: true,
-    })
-    setTimeout(() => {
-      this.setState({
-        transitioning: false,
-      })
-      this.props.onSelect(value)
-    }, 1000)
+    this.props.onSelect(value)
   }
 
   layout = (event: LayoutChangeEvent) => {
@@ -51,7 +41,6 @@ export default class MoodQuestion extends React.Component<Props, State> {
         <View style={styles.grid} onLayout={this.layout}>
           {this.state.boxSize > 0 && questionOptions.map((opt) => (
               <FeelButton
-                clickable={this.state.transitioning === false}
                 key={opt}
                 boxSize={this.state.boxSize}
                 name={opt}

@@ -1,14 +1,39 @@
 import * as React from 'react'
-import {BackHandler, StyleSheet, Text, View} from 'react-native'
-import { goHomeAndReset } from '../navigation'
+import {BackHandler, LayoutChangeEvent, StyleSheet} from 'react-native'
 import { NavigationEventSubscription, NavigationScreenProp } from 'react-navigation'
+import Graph from '../components/Graph'
 import Screen from '../components/Screen'
+import { goHomeAndReset } from '../navigation'
 
 interface Props {
   navigation: NavigationScreenProp<{}>
 }
 
-export default class Statistics extends React.Component<Props> {
+const testData = [
+  {date: '2018-10-01', entries: [{time: '10:00:00', name: 'sad'}, {time: '12:00:00', name: 'happy'}]},
+  {date: '2018-10-02', entries: [{time: '10:00:00', name: 'happy'}]},
+  {date: '2018-10-03', entries: [{time: '10:00:00', name: 'graah'}]},
+  {date: '2018-10-04', entries: [{time: '10:00:00', name: 'sad'}, {time: '12:00:00', name: 'happy'}]},
+  {date: '2018-10-05', entries: [{time: '10:00:00', name: 'happy'}]},
+  {date: '2018-10-06', entries: [{time: '10:00:00', name: 'graah'}]},
+  {date: '2018-10-07', entries: [{time: '10:00:00', name: 'sad'}, {time: '12:00:00', name: 'happy'}]},
+  {date: '2018-10-08', entries: [{time: '10:00:00', name: 'happy'}]},
+  {date: '2018-10-09', entries: [{time: '10:00:00', name: 'graah'}]},
+]
+
+interface State {
+  graphSize: {
+    height: number,
+  }
+}
+export default class Statistics extends React.Component<Props, State> {
+
+  state = {
+    graphSize: {
+      height: 0,
+    },
+  }
+
   private willBlurSub: NavigationEventSubscription
   private didFocusSub: NavigationEventSubscription
   constructor(props: Props) {
@@ -40,29 +65,27 @@ export default class Statistics extends React.Component<Props> {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
   }
 
+  onLayout = (e: LayoutChangeEvent) => {
+    console.log(e.nativeEvent.layout)
+    this.setState({
+      graphSize: {
+        height: e.nativeEvent.layout.height,
+      },
+    })
+  }
+
   render() {
     return (
-      <Screen style={styles.container}>
-        <View style={styles.grid}>
-          <Text>Statistics</Text>
-        </View>
+      <Screen style={styles.container} onLayout={this.onLayout}>
+        <Graph data={testData} size={this.state.graphSize} />
       </Screen>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  grid: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    width: '100%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    // padding: margin,
-  },
   container: {
-    padding: 12,
+    // padding: 12,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

@@ -1,11 +1,12 @@
 import * as React from 'react'
-import {Animated, Easing, StyleSheet, View, ViewStyle} from 'react-native'
+import {Animated, Easing, LayoutChangeEvent, StyleSheet, View, ViewStyle} from 'react-native'
 import AnimatedValue = Animated.AnimatedValue
 
 interface Props {
   children: React.ReactNode,
   style?: ViewStyle,
-  onReady?: () => void
+  onReady?: () => void,
+  onLayout?: (e: LayoutChangeEvent) => void
 }
 interface State {
   animatedValue: AnimatedValue
@@ -30,10 +31,10 @@ export default class Screen extends React.Component<Props, State> {
   }
 
   render() {
-    const { children, style: propStyle = null } = this.props
+    const { children, style: propStyle = null, onLayout = () => {} } = this.props
 
     return (
-      <View style={[styles.container, propStyle && propStyle]}>
+      <View style={[styles.container, propStyle && propStyle]} onLayout={onLayout}>
         {children}
       </View>
     )
