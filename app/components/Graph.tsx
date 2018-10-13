@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { FlatList, StyleSheet, Text, View } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
 
 interface IDayData {
   date: string
@@ -20,31 +21,44 @@ const Pillar = (props: IPillar) => {
   const { entries, date } = dayData
   const parsedDate = date.split('-')
 
+  const rowColor = index % 2 ? 'rgba(240, 240, 240, 1)' : 'rgba(255, 255, 255, 1)'
+
   return (
     <View
       style={[
         styles.pillar,
         {
-          backgroundColor: index % 2 ? 'rgba(240, 240, 240, 1)' : 'rgba(255, 255, 255, 1)',
+          backgroundColor: rowColor,
         },
       ]}
     >
       {entries.map(entry => {
         return (
           <View style={styles.pillarEntry} key={entry.time}>
-            <View style={styles.pillarGraphic}>
+            <LinearGradient colors={[ 'rebeccapurple', rowColor]} style={styles.pillarGraphic}>
               <Text
                 style={{
                   transform: [
+                    { translateY: -30 },
+                    { translateX: 0 },
                     { rotate: '-60deg' },
-                    { translateY: -20 },
-                    { translateX: 20 },
                   ],
                 }}
               >
                 {entry.name}
               </Text>
-            </View>
+              <Text
+                style={{
+                  transform: [
+                    { translateY: -30 },
+                    { translateX: 10 },
+                    { rotate: '-60deg' },
+                  ],
+                }}
+              >
+                {entry.time}
+              </Text>
+            </LinearGradient>
           </View>
         )
       })}
@@ -82,6 +96,7 @@ const styles = StyleSheet.create({
   pillar: {
     flex: 1,
     justifyContent: 'flex-end',
+    minWidth: 80,
   },
   pillarEntry: {
     flexGrow: 1,

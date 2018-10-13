@@ -10,7 +10,12 @@ interface Props {
 }
 
 const testData = [
-  {date: '2018-10-01', entries: [{time: '10:00:00', name: 'sad'}, {time: '12:00:00', name: 'happy'}]},
+  {date: '2018-10-01', entries: [
+    {time: '10:00:00', name: 'sehnsucht'},
+    {time: '12:00:00', name: 'happy'},
+    {time: '13:00:00', name: 'happy'},
+    {time: '14:00:00', name: 'happy'},
+  ]},
   {date: '2018-10-02', entries: [{time: '10:00:00', name: 'happy'}]},
   {date: '2018-10-03', entries: [{time: '10:00:00', name: 'graah'}]},
   {date: '2018-10-04', entries: [{time: '10:00:00', name: 'sad'}, {time: '12:00:00', name: 'happy'}]},
