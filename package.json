@@ -9,6 +9,7 @@
     "lint": "tslint -p \".\" -t stylish"
   },
   "dependencies": {
+    "date-fns": "^1.29.0",
     "immer": "^1.7.2",
     "react": "16.4.1",
     "react-native": "0.56.0",

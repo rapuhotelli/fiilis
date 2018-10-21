@@ -1,7 +1,8 @@
 import * as React from 'react'
 import {BackHandler, LayoutChangeEvent, StyleSheet} from 'react-native'
 import { NavigationEventSubscription, NavigationScreenProp } from 'react-navigation'
-import Graph from '../components/Graph'
+import Month from '../components/Month'
+// import Graph from '../components/Graph'
 import Screen from '../components/Screen'
 import { goHomeAndReset } from '../navigation'
 
@@ -82,18 +83,20 @@ export default class Statistics extends React.Component<Props, State> {
   render() {
     return (
       <Screen style={styles.container} onLayout={this.onLayout}>
-        <Graph data={testData} size={this.state.graphSize} />
+        <Month currentYearMonth='2018-09' data={testData} />
       </Screen>
     )
   }
 }
 
+        // <Graph data={testData} size={this.state.graphSize} />
 const styles = StyleSheet.create({
-  container: {
+  container:  {
     // padding: 12,
-    flex: 1,
+    flex:  1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
 })
+
