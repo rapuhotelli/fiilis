@@ -1,25 +1,45 @@
 import * as dateFns from 'date-fns'
 import * as React from 'react'
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
-import {getDaysInMonth} from 'date-fns'
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
+import { IEntry, IEntryData } from '../views/Statistics'
 
-const { width: deviceWidth } = Dimensions.get('window')
+const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window')
 
-interface IWeek {
+interface IWeekProps {
   days?: number[]
   children: React.ReactNode
 }
 
-const Week = (props: IWeek) => (
+const Week = (props: IWeekProps) => (
   <View style={styles.week}>
     {props.children}
   </View>
 )
-const Day = (props) => (
-  <View style={styles.day}>
-    {props.children}
-  </View>
-)
+
+interface IDayProps {
+  dayNumber: number
+  entryData: IEntry[]
+}
+const Day = ({entryData, dayNumber}: IDayProps) => {
+  const gradient = entryData ? ['#663399', '#442266'] : ['#cccccc', '#c0c0c0']
+  const textColor = entryData ? 'white' : 'black'
+  const Wrapper = entryData ? TouchableOpacity : View
+  return (
+    <View style={[styles.day]}>
+      <Wrapper>
+        <LinearGradient colors={gradient} style={styles.innerDay}>
+          <Text style={{color: textColor, alignSelf: 'flex-start', paddingLeft: 5}}>{dayNumber}</Text>
+          {entryData && (
+            <View style={styles.entryCounter}>
+              {entryData && <Text style={{color: textColor}}>{entryData.length}</Text>}
+            </View>
+          )}
+        </LinearGradient>
+      </Wrapper>
+    </View>
+  )
+}
 
 const getMonday = (d: any) => {
   d = new Date(d)
@@ -29,7 +49,7 @@ const getMonday = (d: any) => {
 }
 
 interface Props {
-  data: any
+  data: IEntryData
   currentYearMonth: string // 2018-01
 }
 interface State {
@@ -48,33 +68,34 @@ class Month extends React.Component<Props, State> {
     const isoWeekDay = dateFns.getISODay(this.props.currentYearMonth)
 
     const date = new Date(this.props.currentYearMonth)
-    for (let i = 0; i < dateFns.getDaysInMonth(date); i++) {
-       
-      days.push(<Day><Text>{i}</Text></Day>)
+    const dayCount = dateFns.getDaysInMonth(date) + (isoWeekDay - 1)
+    for (let i = 1; i <= dayCount ; i++) {
+      const dayNumber = Math.max(i - (isoWeekDay - 1), 0)
+
+      const currentDay = dayNumber > 0 ? new Date(`${this.props.currentYearMonth}-${i}`) : null
+      if (!currentDay) {
+        continue
+      }
+
+      const result = dateFns.format(
+        new Date(currentDay),
+        'YYYY-MM-DD',
+      )
+      const entryData = this.props.data[result]
+      days.push(<Day key={i} entryData={entryData} dayNumber={dayNumber} />)
     }
     return days
   }
 
   render() {
-    const monthStartDate = new Date(this.props.currentYearMonth)
-    const monthStartWeekday = monthStartDate.getDay()
-    /*
-    let day = 0
-
-    console.log('monthStart', props.currentYearMonth, monthStartWeekday)
-    console.log(new Date(props.currentYearMonth))
-    */
-    /*
-    Array(7).fill(null).map((_, i) => {
-      return (monthStartWeekday >= i) ? <Day><Text>{++day}</Text></Day> : null
-    })
-    */
-
     return (
-      <View style={styles.container}>
-        <Week>
-          {this.renderFirstWeek()}
-        </Week>
+      <View>
+        <View>
+          <Text style={{fontSize: 16}}>{this.props.currentYearMonth}</Text>
+        </View>
+        <View style={styles.container}>
+        {this.renderFirstWeek()}
+        </View>
       </View>
     )
   }
@@ -85,20 +106,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: deviceWidth,
-    backgroundColor: 'yellow',
-    // flexGrow: 1,
-    // height: '100%',
+    padding: 10,
   },
   day: {
-    /*
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: 0,
-    */
-    width: '14%',
+    width: `${100 / 7}%`,
+    height: deviceHeight / 8,
     shadowColor: '#F9A440',
-    backgroundColor: 'gray',
-    // boxShadow: '-1px -1px #F9A440, inset -1px -1px 0 0 #F9A440',
+    padding: 5,
+  },
+  innerDay: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: '100%',
+    borderRadius: 5,
+  },
+  entryCounter: {
+    alignSelf: 'flex-end', padding: 5,
+    borderTopWidth: 2,
+    borderLeftWidth: 2,
+    borderColor: 'white',
+    borderTopLeftRadius: 5,
   },
   week: {
     flexDirection: 'row',

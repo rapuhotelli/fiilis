@@ -10,6 +10,15 @@ interface Props {
   navigation: NavigationScreenProp<{}>
 }
 
+export interface IEntry {
+  time: string,
+  name: string
+}
+export interface IEntryData {
+  [key: string]: IEntry[]
+}
+
+/*
 const testData = [
   {date: '2018-10-01', entries: [
     {time: '10:00:00', name: 'sehnsucht'},
@@ -26,6 +35,23 @@ const testData = [
   {date: '2018-10-08', entries: [{time: '10:00:00', name: 'happy'}]},
   {date: '2018-10-09', entries: [{time: '10:00:00', name: 'graah'}]},
 ]
+*/
+const testData: IEntryData = {
+  '2018-10-01': [
+    {time: '10:00:00', name: 'sehnsucht'},
+    {time: '12:00:00', name: 'happy'},
+    {time: '13:00:00', name: 'happy'},
+    {time: '14:00:00', name: 'happy'},
+  ],
+  '2018-10-02': [{time: '10:00:00', name: 'happy'}],
+  '2018-10-03': [{time: '10:00:00', name: 'graah'}],
+  '2018-10-07': [{time: '10:00:00', name: 'sad'}, {time: '12:00:00', name: 'happy'}],
+  '2018-10-10': [{time: '10:00:00', name: 'happy'}],
+  '2018-10-15': [{time: '10:00:00', name: 'graah'}],
+  '2018-10-20': [{time: '10:00:00', name: 'sad'}, {time: '12:00:00', name: 'happy'}],
+  '2018-10-21': [{time: '10:00:00', name: 'happy'}],
+  '2018-10-22': [{time: '10:00:00', name: 'graah'}],
+}
 
 interface State {
   graphSize: {
@@ -83,7 +109,7 @@ export default class Statistics extends React.Component<Props, State> {
   render() {
     return (
       <Screen style={styles.container} onLayout={this.onLayout}>
-        <Month currentYearMonth='2018-09' data={testData} />
+        <Month currentYearMonth='2018-10' data={testData} />
       </Screen>
     )
   }
