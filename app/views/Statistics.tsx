@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {BackHandler, LayoutChangeEvent, StyleSheet} from 'react-native'
+import {BackHandler, LayoutChangeEvent, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import { NavigationEventSubscription, NavigationScreenProp } from 'react-navigation'
 import Month from '../components/Month'
 // import Graph from '../components/Graph'
@@ -12,8 +12,11 @@ interface Props {
 
 export interface IEntry {
   time: string,
-  name: string
+  name: string,
+  intensity: string,
+  origin: string
 }
+
 export interface IEntryData {
   [key: string]: IEntry[]
 }
@@ -38,25 +41,32 @@ const testData = [
 */
 const testData: IEntryData = {
   '2018-10-01': [
-    {time: '10:00:00', name: 'sehnsucht'},
-    {time: '12:00:00', name: 'happy'},
-    {time: '13:00:00', name: 'happy'},
-    {time: '14:00:00', name: 'happy'},
+    {time: '10:00:00', name: 'sehnsucht', intensity: 'medium', origin: 'derp'},
+    {time: '12:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
+    {time: '13:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
+    {time: '14:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
   ],
-  '2018-10-02': [{time: '10:00:00', name: 'happy'}],
-  '2018-10-03': [{time: '10:00:00', name: 'graah'}],
-  '2018-10-07': [{time: '10:00:00', name: 'sad'}, {time: '12:00:00', name: 'happy'}],
-  '2018-10-10': [{time: '10:00:00', name: 'happy'}],
-  '2018-10-15': [{time: '10:00:00', name: 'graah'}],
-  '2018-10-20': [{time: '10:00:00', name: 'sad'}, {time: '12:00:00', name: 'happy'}],
-  '2018-10-21': [{time: '10:00:00', name: 'happy'}],
-  '2018-10-22': [{time: '10:00:00', name: 'graah'}],
+  '2018-10-02': [{time: '10:00:00', name: 'happy', intensity: 'medium', origin: 'derp'}],
+  '2018-10-03': [{time: '10:00:00', name: 'graah', intensity: 'medium', origin: 'derp'}],
+  '2018-10-07': [
+    {time: '10:00:00', name: 'sad', intensity: 'medium', origin: 'derp'},
+    {time: '12:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
+  ],
+  '2018-10-10': [{time: '10:00:00', name: 'happy', intensity: 'medium', origin: 'derp'}],
+  '2018-10-15': [{time: '10:00:00', name: 'graah', intensity: 'medium', origin: 'derp'}],
+  '2018-10-20': [
+    {time: '10:00:00', name: 'sad', intensity: 'medium', origin: 'derp'},
+    {time: '12:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
+  ],
+  '2018-10-21': [{time: '10:00:00', name: 'happy', intensity: 'medium', origin: 'derp'}],
+  '2018-10-22': [{time: '10:00:00', name: 'graah', intensity: 'medium', origin: 'derp'}],
 }
 
 interface State {
   graphSize: {
     height: number,
-  }
+  },
+  selectedMonth: Date
 }
 export default class Statistics extends React.Component<Props, State> {
 
@@ -64,6 +74,7 @@ export default class Statistics extends React.Component<Props, State> {
     graphSize: {
       height: 0,
     },
+    selectedMonth: new Date(),
   }
 
   private willBlurSub: NavigationEventSubscription
@@ -90,10 +101,8 @@ export default class Statistics extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    console.log('should unmount')
     this.willBlurSub.remove()
     this.didFocusSub.remove()
-
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
   }
 
@@ -109,7 +118,18 @@ export default class Statistics extends React.Component<Props, State> {
   render() {
     return (
       <Screen style={styles.container} onLayout={this.onLayout}>
-        <Month currentYearMonth='2018-10' data={testData} />
+        <View style={styles.selectorContainer}>
+          <TouchableOpacity>
+            <Text>prev</Text>
+          </TouchableOpacity>
+          <Text style={{fontSize: 16}}>123</Text>
+          <TouchableOpacity>
+            <Text>next</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.monthContainer}>
+          <Month selectedMonth={this.state.selectedMonth} data={testData} />
+        </View>
       </Screen>
     )
   }
@@ -120,9 +140,19 @@ const styles = StyleSheet.create({
   container:  {
     // padding: 12,
     flex:  1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  selectorContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    padding: 20,
+  },
+  monthContainer:  {
+    // padding: 12,
+    flex:  1,
+    // justifyContent: 'center',
+    // alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
 })
-

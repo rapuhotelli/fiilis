@@ -6,17 +6,6 @@ import { IEntry, IEntryData } from '../views/Statistics'
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window')
 
-interface IWeekProps {
-  days?: number[]
-  children: React.ReactNode
-}
-
-const Week = (props: IWeekProps) => (
-  <View style={styles.week}>
-    {props.children}
-  </View>
-)
-
 interface IDayProps {
   dayNumber: number
   entryData: IEntry[]
@@ -41,44 +30,39 @@ const Day = ({entryData, dayNumber}: IDayProps) => {
   )
 }
 
-const getMonday = (d: any) => {
-  d = new Date(d)
-  const day = d.getDay()
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1) // adjust when day is sunday
-  return new Date(d.setDate(diff))
-}
-
 interface Props {
   data: IEntryData
-  currentYearMonth: string // 2018-01
+  // currentYearMonth: string // 2018-01
+  selectedMonth: Date,
 }
 interface State {
-  currentMonth: Date,
   selectedDate: Date
 }
 
 class Month extends React.Component<Props, State> {
   state = {
-    currentMonth: new Date(),
     selectedDate: new Date(),
   }
 
-  renderFirstWeek() {
-    const days = []
-    const isoWeekDay = dateFns.getISODay(this.props.currentYearMonth)
+  renderMonth() {
+    const currentYearMonth = dateFns.format(this.props.selectedMonth, 'YYYY-MM')
 
-    const date = new Date(this.props.currentYearMonth)
-    const dayCount = dateFns.getDaysInMonth(date) + (isoWeekDay - 1)
+    const days = []
+    const isoWeekDay = dateFns.getISODay(this.props.selectedMonth)
+    const daysInMonth = dateFns.getDaysInMonth(this.props.selectedMonth)
+    const dayCount = daysInMonth + (isoWeekDay - 1)
+
     for (let i = 1; i <= dayCount ; i++) {
       const dayNumber = Math.max(i - (isoWeekDay - 1), 0)
 
-      const currentDay = dayNumber > 0 ? new Date(`${this.props.currentYearMonth}-${i}`) : null
+      const currentDay = dayNumber > 0 ? new Date(`${currentYearMonth}-${i}`) : null
+      console.log(currentDay, `${currentYearMonth}-${i}`)
       if (!currentDay) {
         continue
       }
 
       const result = dateFns.format(
-        new Date(currentDay),
+        currentDay,
         'YYYY-MM-DD',
       )
       const entryData = this.props.data[result]
@@ -89,13 +73,8 @@ class Month extends React.Component<Props, State> {
 
   render() {
     return (
-      <View>
-        <View>
-          <Text style={{fontSize: 16}}>{this.props.currentYearMonth}</Text>
-        </View>
-        <View style={styles.container}>
-        {this.renderFirstWeek()}
-        </View>
+      <View style={styles.container}>
+        {this.renderMonth()}
       </View>
     )
   }
