@@ -1,8 +1,9 @@
+import * as dateFns from 'date-fns'
 import * as React from 'react'
 import {BackHandler, LayoutChangeEvent, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
 import { NavigationEventSubscription, NavigationScreenProp } from 'react-navigation'
 import Month from '../components/Month'
-// import Graph from '../components/Graph'
 import Screen from '../components/Screen'
 import { goHomeAndReset } from '../navigation'
 
@@ -21,24 +22,6 @@ export interface IEntryData {
   [key: string]: IEntry[]
 }
 
-/*
-const testData = [
-  {date: '2018-10-01', entries: [
-    {time: '10:00:00', name: 'sehnsucht'},
-    {time: '12:00:00', name: 'happy'},
-    {time: '13:00:00', name: 'happy'},
-    {time: '14:00:00', name: 'happy'},
-  ]},
-  {date: '2018-10-02', entries: [{time: '10:00:00', name: 'happy'}]},
-  {date: '2018-10-03', entries: [{time: '10:00:00', name: 'graah'}]},
-  {date: '2018-10-04', entries: [{time: '10:00:00', name: 'sad'}, {time: '12:00:00', name: 'happy'}]},
-  {date: '2018-10-05', entries: [{time: '10:00:00', name: 'happy'}]},
-  {date: '2018-10-06', entries: [{time: '10:00:00', name: 'graah'}]},
-  {date: '2018-10-07', entries: [{time: '10:00:00', name: 'sad'}, {time: '12:00:00', name: 'happy'}]},
-  {date: '2018-10-08', entries: [{time: '10:00:00', name: 'happy'}]},
-  {date: '2018-10-09', entries: [{time: '10:00:00', name: 'graah'}]},
-]
-*/
 const testData: IEntryData = {
   '2018-10-01': [
     {time: '10:00:00', name: 'sehnsucht', intensity: 'medium', origin: 'derp'},
@@ -60,6 +43,7 @@ const testData: IEntryData = {
   ],
   '2018-10-21': [{time: '10:00:00', name: 'happy', intensity: 'medium', origin: 'derp'}],
   '2018-10-22': [{time: '10:00:00', name: 'graah', intensity: 'medium', origin: 'derp'}],
+  '2018-10-31': [{time: '10:00:00', name: 'graah', intensity: 'medium', origin: 'derp'}],
 }
 
 interface State {
@@ -68,13 +52,23 @@ interface State {
   },
   selectedMonth: Date
 }
-export default class Statistics extends React.Component<Props, State> {
 
+const MonthButton = (props: {onPress: any, label: string}) => {
+  return (
+    <TouchableOpacity onPress={props.onPress} style={{flex: 1, alignItems: 'center'}}>
+      <LinearGradient colors={['#663399', '#442266']} style={{padding: 10, borderRadius: 5}}>
+        <Text style={{color: 'white'}}>{props.label}</Text>
+      </LinearGradient>
+    </TouchableOpacity>
+  )
+}
+
+export default class Statistics extends React.Component<Props, State> {
   state = {
     graphSize: {
       height: 0,
     },
-    selectedMonth: new Date(),
+    selectedMonth: dateFns.startOfMonth(new Date()),
   }
 
   private willBlurSub: NavigationEventSubscription
@@ -106,8 +100,19 @@ export default class Statistics extends React.Component<Props, State> {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
   }
 
+  selectPreviousMonth = () => {
+    this.setState({
+      selectedMonth: dateFns.subMonths(this.state.selectedMonth, 1),
+    })
+  }
+
+  selectNextMonth = () => {
+    this.setState({
+      selectedMonth: dateFns.addMonths(this.state.selectedMonth, 1),
+    })
+  }
+
   onLayout = (e: LayoutChangeEvent) => {
-    console.log(e.nativeEvent.layout)
     this.setState({
       graphSize: {
         height: e.nativeEvent.layout.height,
@@ -116,16 +121,21 @@ export default class Statistics extends React.Component<Props, State> {
   }
 
   render() {
+
     return (
       <Screen style={styles.container} onLayout={this.onLayout}>
         <View style={styles.selectorContainer}>
-          <TouchableOpacity>
-            <Text>prev</Text>
-          </TouchableOpacity>
-          <Text style={{fontSize: 16}}>123</Text>
-          <TouchableOpacity>
-            <Text>next</Text>
-          </TouchableOpacity>
+          <MonthButton
+            onPress={this.selectPreviousMonth}
+            label={dateFns.format(dateFns.subMonths(this.state.selectedMonth, 1), 'MMM')}
+          />
+          <View style={{flex: 2, alignItems: 'center'}}>
+            <Text style={{fontSize: 16}}>{dateFns.format(this.state.selectedMonth, 'MMMM YYYY')}</Text>
+          </View>
+          <MonthButton
+            onPress={this.selectNextMonth}
+            label={dateFns.format(dateFns.addMonths(this.state.selectedMonth, 1), 'MMM')}
+          />
         </View>
         <View style={styles.monthContainer}>
           <Month selectedMonth={this.state.selectedMonth} data={testData} />
@@ -147,6 +157,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     padding: 20,
+    marginTop: 20,
   },
   monthContainer:  {
     // padding: 12,

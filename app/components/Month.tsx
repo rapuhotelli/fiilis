@@ -7,8 +7,8 @@ import { IEntry, IEntryData } from '../views/Statistics'
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window')
 
 interface IDayProps {
-  dayNumber: number
-  entryData: IEntry[]
+  dayNumber: number | null
+  entryData: IEntry[] | null
 }
 const Day = ({entryData, dayNumber}: IDayProps) => {
   const gradient = entryData ? ['#663399', '#442266'] : ['#cccccc', '#c0c0c0']
@@ -16,6 +16,7 @@ const Day = ({entryData, dayNumber}: IDayProps) => {
   const Wrapper = entryData ? TouchableOpacity : View
   return (
     <View style={[styles.day]}>
+      {dayNumber !== null && (
       <Wrapper>
         <LinearGradient colors={gradient} style={styles.innerDay}>
           <Text style={{color: textColor, alignSelf: 'flex-start', paddingLeft: 5}}>{dayNumber}</Text>
@@ -26,6 +27,7 @@ const Day = ({entryData, dayNumber}: IDayProps) => {
           )}
         </LinearGradient>
       </Wrapper>
+      )}
     </View>
   )
 }
@@ -45,28 +47,21 @@ class Month extends React.Component<Props, State> {
   }
 
   renderMonth() {
-    const currentYearMonth = dateFns.format(this.props.selectedMonth, 'YYYY-MM')
-
     const days = []
     const isoWeekDay = dateFns.getISODay(this.props.selectedMonth)
     const daysInMonth = dateFns.getDaysInMonth(this.props.selectedMonth)
-    const dayCount = daysInMonth + (isoWeekDay - 1)
-
-    for (let i = 1; i <= dayCount ; i++) {
-      const dayNumber = Math.max(i - (isoWeekDay - 1), 0)
-
-      const currentDay = dayNumber > 0 ? new Date(`${currentYearMonth}-${i}`) : null
-      console.log(currentDay, `${currentYearMonth}-${i}`)
-      if (!currentDay) {
+    for (let i = 1 - (isoWeekDay - 1); i <= daysInMonth; i++) {
+      if (i <= 0) {
+        days.push(<Day key={i} entryData={null} dayNumber={null} />)
         continue
       }
-
+      const currentDay = dateFns.addDays(this.props.selectedMonth, i - 1)
       const result = dateFns.format(
         currentDay,
         'YYYY-MM-DD',
       )
       const entryData = this.props.data[result]
-      days.push(<Day key={i} entryData={entryData} dayNumber={dayNumber} />)
+      days.push(<Day key={i} entryData={entryData} dayNumber={i} />)
     }
     return days
   }
