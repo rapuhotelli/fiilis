@@ -2,7 +2,7 @@ import * as React from 'react'
 import {IState} from './commonTypes'
 import devtools from './devtools'
 
-export type Dispatch = (action: IAction, callback: () => void) => void
+export type Dispatch = (action: IAction, callback: (state: IState) => void) => void
 
 const initialState: IState = {
   selectedMood: null,
@@ -71,7 +71,7 @@ export class Provider extends React.Component<Props, IState> {
   dispatch: Dispatch = (action, callback = () => {}) => {
     this.setState(state => reducer(state, action), () => {
       this.devToolSend(action)
-      callback()
+      callback(this.state)
     })
   }
 

@@ -7,17 +7,13 @@
  */
 
 import * as React from 'react'
-import { AsyncStorage } from 'react-native'
-
-// import { StyleSheet } from 'react-native';
 import MainNav from './navigation'
+import { clearStorage } from './storage'
 import { Consumer, Provider } from './store'
 
 export default class App extends React.Component<{}> {
   componentDidMount() {
-  }
-
-  initStore = async () => {
+    clearStorage()
   }
 
   render() {
@@ -30,24 +26,3 @@ export default class App extends React.Component<{}> {
     )
   }
 }
-
-/*
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
-*/

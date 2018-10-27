@@ -32,6 +32,16 @@ const Day = ({entryData, dayNumber}: IDayProps) => {
   )
 }
 
+export interface CalendarEntry {
+  name: string
+  intensity: string
+  origin: string
+}
+
+export interface CalendarData {
+  [key: string]: CalendarEntry[]
+}
+
 interface Props {
   data: IEntryData
   // currentYearMonth: string // 2018-01

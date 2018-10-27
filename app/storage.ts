@@ -1,17 +1,33 @@
-import {AsyncStorage} from 'react-native'
+import { AsyncStorage } from 'react-native'
 
-const clear = async () => {
-  await AsyncStorage.removeItem('@fiilis:entryData')
+export interface IEntry {
+  name: string
+  intensity: string
+  origin: string
 }
 
+export interface IEntryData {
+  [key: string]: IEntry
+}
 
+const ENTRY_KEY = '@fiilis:entryData'
 
-const insertEntry = (newEntry) => {
+export const clearStorage = async () => {
+  await AsyncStorage.removeItem(ENTRY_KEY)
+}
 
-  AsyncStorage.mergeItem('@fiilis:entryData', JSON.stringify(UID123_delta), () => {
-    AsyncStorage.getItem('@fiilis:entryData', (err, result) => {
-      console.log(result)
+export const insertEntry = (newEntry: IEntryData, callback?: any) => {
+  AsyncStorage.mergeItem(ENTRY_KEY, JSON.stringify(newEntry), () => {
+    AsyncStorage.getItem(ENTRY_KEY, (err, result) => {
+      if (result) {
+        callback(JSON.parse(result))
+      }
     })
   })
+}
 
+export const getEntries = (callback: any) => {
+  AsyncStorage.getItem(ENTRY_KEY, (err, result) => {
+    callback(result)
+  })
 }

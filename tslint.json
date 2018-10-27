@@ -3,6 +3,7 @@
     "tslint-react-recommended"
   ],
   "rules": {
+    "whitespace": [true, "check-module"],
     "ordered-imports": [
       true
     ],

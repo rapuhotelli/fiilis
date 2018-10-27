@@ -1,49 +1,26 @@
 import * as dateFns from 'date-fns'
 import * as React from 'react'
-import {BackHandler, LayoutChangeEvent, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import { BackHandler, LayoutChangeEvent, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { NavigationEventSubscription, NavigationScreenProp } from 'react-navigation'
-import Month from '../components/Month'
+import Month, { CalendarData } from '../components/Month'
 import Screen from '../components/Screen'
 import { goHomeAndReset } from '../navigation'
+import { getEntries, IEntryData } from '../storage'
 
 interface Props {
   navigation: NavigationScreenProp<{}>
 }
 
-export interface IEntry {
-  time: string,
-  name: string,
-  intensity: string,
-  origin: string
-}
-
-export interface IEntryData {
-  [key: string]: IEntry[]
-}
-
 const testData: IEntryData = {
-  '2018-10-01': [
-    {time: '10:00:00', name: 'sehnsucht', intensity: 'medium', origin: 'derp'},
-    {time: '12:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
-    {time: '13:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
-    {time: '14:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
-  ],
-  '2018-10-02': [{time: '10:00:00', name: 'happy', intensity: 'medium', origin: 'derp'}],
-  '2018-10-03': [{time: '10:00:00', name: 'graah', intensity: 'medium', origin: 'derp'}],
-  '2018-10-07': [
-    {time: '10:00:00', name: 'sad', intensity: 'medium', origin: 'derp'},
-    {time: '12:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
-  ],
-  '2018-10-10': [{time: '10:00:00', name: 'happy', intensity: 'medium', origin: 'derp'}],
-  '2018-10-15': [{time: '10:00:00', name: 'graah', intensity: 'medium', origin: 'derp'}],
-  '2018-10-20': [
-    {time: '10:00:00', name: 'sad', intensity: 'medium', origin: 'derp'},
-    {time: '12:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
-  ],
-  '2018-10-21': [{time: '10:00:00', name: 'happy', intensity: 'medium', origin: 'derp'}],
-  '2018-10-22': [{time: '10:00:00', name: 'graah', intensity: 'medium', origin: 'derp'}],
-  '2018-10-31': [{time: '10:00:00', name: 'graah', intensity: 'medium', origin: 'derp'}],
+  '2018-10-01 10:00:00': { name: 'sehnsucht', intensity: 'medium', origin: 'derp'},
+  '2018-10-01 12:00:00': { name: 'happy', intensity: 'medium', origin: 'derp'},
+  '2018-10-01 13:00:00': { name: 'happy', intensity: 'medium', origin: 'derp'},
+  '2018-10-01 14:00:00': { name: 'happy', intensity: 'medium', origin: 'derp'},
+  '2018-10-02 10:00:00': { name: 'happy', intensity: 'medium', origin: 'derp'},
+  '2018-10-03 10:00:00': { name: 'graah', intensity: 'medium', origin: 'derp'},
+  '2018-10-07 10:00:00': { name: 'sad', intensity: 'medium', origin: 'derp'},
+  '2018-10-07 12:00:00': { name: 'happy', intensity: 'medium', origin: 'derp'},
 }
 
 interface State {
@@ -51,6 +28,7 @@ interface State {
     height: number,
   },
   selectedMonth: Date
+  entryData: IEntryData
 }
 
 const MonthButton = (props: {onPress: any, label: string}) => {
@@ -69,6 +47,7 @@ export default class Statistics extends React.Component<Props, State> {
       height: 0,
     },
     selectedMonth: dateFns.startOfMonth(new Date()),
+    entryData: {},
   }
 
   private todayDate: Date
@@ -87,9 +66,42 @@ export default class Statistics extends React.Component<Props, State> {
     this.didFocusSub = this.props.navigation.addListener(
       'didFocus',
       () => {
+        getEntries(entries => {
+          console.log('entries: ',entries)
+        })
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress)
       },
     )
+  }
+  
+  parseEntryData(entryData: IEntryData): CalendarData {
+    const parsed = {}
+    entryData.map(day => {
+      
+    })
+  }
+
+  componentDidMount() {
+    /*
+    insertEntry({
+      '2018-10-01': [
+        {time: '10:00:00', name: 'sehnsucht', intensity: 'medium', origin: 'derp'},
+        {time: '12:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
+        {time: '13:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
+        {time: '14:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
+      ],
+      '2018-10-02': [{time: '10:00:00', name: 'happy', intensity: 'medium', origin: 'derp'}],
+      '2018-10-03': [{time: '10:00:00', name: 'graah', intensity: 'medium', origin: 'derp'}],
+      '2018-10-07': [
+        {time: '10:00:00', name: 'sad', intensity: 'medium', origin: 'derp'},
+        {time: '12:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
+      ],
+    }, (result) => {
+      this.setState({
+        entryData: result,
+      })
+    })
+    */
   }
 
   handleBackPress = () => {
