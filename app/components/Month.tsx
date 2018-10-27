@@ -13,11 +13,11 @@ interface IDayProps {
 const Day = ({entryData, dayNumber}: IDayProps) => {
   const gradient = entryData ? ['#663399', '#442266'] : ['#cccccc', '#c0c0c0']
   const textColor = entryData ? 'white' : 'black'
-  const Wrapper = entryData ? TouchableOpacity : View
+  // const Wrapper = entryData ? TouchableOpacity : View
   return (
     <View style={[styles.day]}>
       {dayNumber !== null && (
-      <Wrapper>
+      <TouchableOpacity>
         <LinearGradient colors={gradient} style={styles.innerDay}>
           <Text style={{color: textColor, alignSelf: 'flex-start', paddingLeft: 5}}>{dayNumber}</Text>
           {entryData && (
@@ -26,7 +26,7 @@ const Day = ({entryData, dayNumber}: IDayProps) => {
             </View>
           )}
         </LinearGradient>
-      </Wrapper>
+      </TouchableOpacity>
       )}
     </View>
   )

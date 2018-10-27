@@ -20,10 +20,10 @@ interface State {
   entryData: CalendarData
 }
 
-const MonthButton = (props: {onPress: any, label: string}) => {
+const MonthButton = (props: {onPress: any, label: string, enabled: boolean}) => {
   return (
-    <TouchableOpacity onPress={props.onPress} style={{flex: 1, alignItems: 'center'}}>
-      <LinearGradient colors={['#663399', '#442266']} style={{padding: 10, borderRadius: 5}}>
+    <TouchableOpacity onPress={() => props.enabled && props.onPress()} style={{flex: 1, alignItems: 'center'}}>
+      <LinearGradient colors={props.enabled ? ['#663399', '#442266'] : ['#cccccc', '#c0c0c0']} style={{padding: 10, borderRadius: 5}}>
         <Text style={{color: 'white'}}>{props.label}</Text>
       </LinearGradient>
     </TouchableOpacity>
@@ -31,27 +31,30 @@ const MonthButton = (props: {onPress: any, label: string}) => {
 }
 
 export default class Statistics extends React.Component<Props, State> {
-  state = {
-    graphSize: {
-      height: 0,
-    },
-    selectedMonth: dateFns.startOfMonth(new Date()),
-    entryData: {},
-  }
-
   private todayDate: Date
   private willBlurSub: NavigationEventSubscription
   private didFocusSub: NavigationEventSubscription
 
   constructor(props: Props) {
     super(props)
+
+    this.state = {
+      graphSize: {
+        height: 0,
+      },
+      selectedMonth: dateFns.startOfMonth(new Date()),
+      entryData: {},
+    }
+
     this.todayDate = new Date()
+
     this.willBlurSub = this.props.navigation.addListener(
       'willBlur',
       () => {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
       },
     )
+
     this.didFocusSub = this.props.navigation.addListener(
       'didFocus',
       () => {
@@ -67,7 +70,7 @@ export default class Statistics extends React.Component<Props, State> {
 
   parseEntryData(entryData: IEntryData): CalendarData {
     const parsed: CalendarData = {}
-    Object.keys(entryData).map(timestamp => {
+    Object.keys(entryData).sort().map(timestamp => {
       const [date, time] = timestamp.split(' ')
       const entry = {
         time,
@@ -112,12 +115,16 @@ export default class Statistics extends React.Component<Props, State> {
   render() {
     const previousMonth = dateFns.subMonths(this.state.selectedMonth, 1)
     const nextMonth = dateFns.addMonths(this.state.selectedMonth, 1)
+    const dateKeys = Object.keys(this.state.entryData).sort()
+    const hasFutureEntries = new Date(dateKeys[dateKeys.length -1]) > dateFns.endOfMonth(this.state.selectedMonth)
+    const hasPastEntries = new Date(dateKeys[0]) < this.state.selectedMonth
     return (
       <Screen style={styles.container} onLayout={this.onLayout}>
         <View style={styles.selectorContainer}>
           <MonthButton
             onPress={this.selectPreviousMonth}
             label={dateFns.format(previousMonth, 'MMM')}
+            enabled={hasPastEntries}
           />
           <View style={{flex: 2, alignItems: 'center'}}>
             <Text style={{fontSize: 16}}>{dateFns.format(this.state.selectedMonth, 'MMMM YYYY')}</Text>
@@ -125,6 +132,7 @@ export default class Statistics extends React.Component<Props, State> {
           <MonthButton
             onPress={this.selectNextMonth}
             label={dateFns.format(nextMonth, 'MMM')}
+            enabled={hasFutureEntries}
           />
         </View>
         <View style={styles.monthContainer}>

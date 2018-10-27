@@ -13,7 +13,7 @@ import { Consumer, Provider } from './store'
 
 export default class App extends React.Component<{}> {
   componentDidMount() {
-    //clearStorage()
+    // clearStorage()
     initStorage()
   }
 
