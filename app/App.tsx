@@ -7,11 +7,19 @@
  */
 
 import * as React from 'react'
+import { AsyncStorage } from 'react-native'
+
 // import { StyleSheet } from 'react-native';
 import MainNav from './navigation'
 import { Consumer, Provider } from './store'
 
 export default class App extends React.Component<{}> {
+  componentDidMount() {
+  }
+
+  initStore = async () => {
+  }
+
   render() {
     return (
       <Provider>

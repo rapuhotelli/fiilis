@@ -71,10 +71,13 @@ export default class Statistics extends React.Component<Props, State> {
     selectedMonth: dateFns.startOfMonth(new Date()),
   }
 
+  private todayDate: Date
   private willBlurSub: NavigationEventSubscription
   private didFocusSub: NavigationEventSubscription
+
   constructor(props: Props) {
     super(props)
+    this.todayDate = new Date()
     this.willBlurSub = this.props.navigation.addListener(
       'willBlur',
       () => {
@@ -121,20 +124,22 @@ export default class Statistics extends React.Component<Props, State> {
   }
 
   render() {
+    const previousMonth = dateFns.subMonths(this.state.selectedMonth, 1)
+    const nextMonth = dateFns.addMonths(this.state.selectedMonth, 1)
 
     return (
       <Screen style={styles.container} onLayout={this.onLayout}>
         <View style={styles.selectorContainer}>
           <MonthButton
             onPress={this.selectPreviousMonth}
-            label={dateFns.format(dateFns.subMonths(this.state.selectedMonth, 1), 'MMM')}
+            label={dateFns.format(previousMonth, 'MMM')}
           />
           <View style={{flex: 2, alignItems: 'center'}}>
             <Text style={{fontSize: 16}}>{dateFns.format(this.state.selectedMonth, 'MMMM YYYY')}</Text>
           </View>
           <MonthButton
             onPress={this.selectNextMonth}
-            label={dateFns.format(dateFns.addMonths(this.state.selectedMonth, 1), 'MMM')}
+            label={dateFns.format(nextMonth, 'MMM')}
           />
         </View>
         <View style={styles.monthContainer}>

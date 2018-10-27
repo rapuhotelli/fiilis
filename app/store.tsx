@@ -2,7 +2,7 @@ import * as React from 'react'
 import {IState} from './commonTypes'
 import devtools from './devtools'
 
-export type Dispatch = (action: IAction) => void
+export type Dispatch = (action: IAction, callback: () => void) => void
 
 const initialState: IState = {
   selectedMood: null,
@@ -61,17 +61,17 @@ export class Provider extends React.Component<Props, IState> {
 
   constructor(props: Props) {
     super(props)
-    const self = this
-    this.devToolSend = devtools(initialState, self)
+    this.devToolSend = devtools(initialState, this)
   }
 
   readonly state: Readonly<IState> = {
     ...initialState,
   }
 
-  dispatch = (action: IAction) => {
+  dispatch: Dispatch = (action, callback = () => {}) => {
     this.setState(state => reducer(state, action), () => {
       this.devToolSend(action)
+      callback()
     })
   }
 

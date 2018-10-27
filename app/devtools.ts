@@ -1,4 +1,4 @@
-import {IState} from './types'
+import {IState} from './commonTypes'
 
 let id = 0
 
