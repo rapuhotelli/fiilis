@@ -33,6 +33,7 @@ const Day = ({entryData, dayNumber}: IDayProps) => {
 }
 
 export interface CalendarEntry {
+  time: string
   name: string
   intensity: string
   origin: string

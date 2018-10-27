@@ -12,23 +12,12 @@ interface Props {
   navigation: NavigationScreenProp<{}>
 }
 
-const testData: IEntryData = {
-  '2018-10-01 10:00:00': { name: 'sehnsucht', intensity: 'medium', origin: 'derp'},
-  '2018-10-01 12:00:00': { name: 'happy', intensity: 'medium', origin: 'derp'},
-  '2018-10-01 13:00:00': { name: 'happy', intensity: 'medium', origin: 'derp'},
-  '2018-10-01 14:00:00': { name: 'happy', intensity: 'medium', origin: 'derp'},
-  '2018-10-02 10:00:00': { name: 'happy', intensity: 'medium', origin: 'derp'},
-  '2018-10-03 10:00:00': { name: 'graah', intensity: 'medium', origin: 'derp'},
-  '2018-10-07 10:00:00': { name: 'sad', intensity: 'medium', origin: 'derp'},
-  '2018-10-07 12:00:00': { name: 'happy', intensity: 'medium', origin: 'derp'},
-}
-
 interface State {
   graphSize: {
     height: number,
   },
   selectedMonth: Date
-  entryData: IEntryData
+  entryData: CalendarData
 }
 
 const MonthButton = (props: {onPress: any, label: string}) => {
@@ -67,41 +56,26 @@ export default class Statistics extends React.Component<Props, State> {
       'didFocus',
       () => {
         getEntries(entries => {
-          console.log('entries: ',entries)
+          this.setState({
+            entryData: this.parseEntryData(entries),
+          })
         })
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress)
       },
     )
   }
-  
-  parseEntryData(entryData: IEntryData): CalendarData {
-    const parsed = {}
-    entryData.map(day => {
-      
-    })
-  }
 
-  componentDidMount() {
-    /*
-    insertEntry({
-      '2018-10-01': [
-        {time: '10:00:00', name: 'sehnsucht', intensity: 'medium', origin: 'derp'},
-        {time: '12:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
-        {time: '13:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
-        {time: '14:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
-      ],
-      '2018-10-02': [{time: '10:00:00', name: 'happy', intensity: 'medium', origin: 'derp'}],
-      '2018-10-03': [{time: '10:00:00', name: 'graah', intensity: 'medium', origin: 'derp'}],
-      '2018-10-07': [
-        {time: '10:00:00', name: 'sad', intensity: 'medium', origin: 'derp'},
-        {time: '12:00:00', name: 'happy', intensity: 'medium', origin: 'derp'},
-      ],
-    }, (result) => {
-      this.setState({
-        entryData: result,
-      })
+  parseEntryData(entryData: IEntryData): CalendarData {
+    const parsed: CalendarData = {}
+    Object.keys(entryData).map(timestamp => {
+      const [date, time] = timestamp.split(' ')
+      const entry = {
+        time,
+        ...entryData[timestamp],
+      }
+      parsed[date] ? parsed[date].push(entry) : parsed[date] = [entry]
     })
-    */
+    return parsed
   }
 
   handleBackPress = () => {
@@ -138,7 +112,6 @@ export default class Statistics extends React.Component<Props, State> {
   render() {
     const previousMonth = dateFns.subMonths(this.state.selectedMonth, 1)
     const nextMonth = dateFns.addMonths(this.state.selectedMonth, 1)
-
     return (
       <Screen style={styles.container} onLayout={this.onLayout}>
         <View style={styles.selectorContainer}>
@@ -155,7 +128,7 @@ export default class Statistics extends React.Component<Props, State> {
           />
         </View>
         <View style={styles.monthContainer}>
-          <Month selectedMonth={this.state.selectedMonth} data={testData} />
+          <Month selectedMonth={this.state.selectedMonth} data={this.state.entryData} />
         </View>
       </Screen>
     )
