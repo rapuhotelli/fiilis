@@ -2,18 +2,16 @@ import * as dateFns from 'date-fns'
 import * as React from 'react'
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
-import { IEntry, IEntryData } from '../views/Statistics'
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window')
 
 interface IDayProps {
   dayNumber: number | null
-  entryData: IEntry[] | null
+  entryData: CalendarEntry[] | null
 }
 const Day = ({entryData, dayNumber}: IDayProps) => {
   const gradient = entryData ? ['#663399', '#442266'] : ['#cccccc', '#c0c0c0']
   const textColor = entryData ? 'white' : 'black'
-  // const Wrapper = entryData ? TouchableOpacity : View
   return (
     <View style={[styles.day]}>
       {dayNumber !== null && (
@@ -44,8 +42,7 @@ export interface CalendarData {
 }
 
 interface Props {
-  data: IEntryData
-  // currentYearMonth: string // 2018-01
+  data: CalendarData
   selectedMonth: Date,
 }
 interface State {

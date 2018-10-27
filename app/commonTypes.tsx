@@ -1,5 +1,5 @@
-import {NavigationScreenProp} from 'react-navigation'
-import {Dispatch} from './store'
+import { NavigationScreenProp } from 'react-navigation'
+import { Dispatch } from './store'
 
 export interface ScreenProps {
   navigation: NavigationScreenProp<{}>,
