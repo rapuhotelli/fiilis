@@ -1,6 +1,6 @@
 import * as React from 'react'
-import {LayoutChangeEvent, View} from 'react-native'
-import {StyleSheet} from 'react-native'
+import { LayoutChangeEvent, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import FeelButton from '../components/FeelButton'
 import Screen from '../components/Screen'
 

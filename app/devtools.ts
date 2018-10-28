@@ -1,8 +1,8 @@
-import {IState} from './commonTypes'
+import { IState } from './commonTypes'
 
 let id = 0
 
-import { IAction} from './store'
+import { IAction } from './store'
 
 export default (initialState: IState, self: any) => {
   // @ts-ignore

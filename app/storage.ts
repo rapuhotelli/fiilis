@@ -7,7 +7,7 @@ export interface IEntry {
 }
 
 export interface IEntryData {
-  [key: string]: IEntry
+  [key: string]: IEntry  // key = 'YYYY-MM-DD HH:mm:ss'
 }
 
 const ENTRY_KEY = '@fiilis:entryData'

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {Animated, Easing, LayoutChangeEvent, StyleSheet, View, ViewStyle} from 'react-native'
+import { Animated, Easing, LayoutChangeEvent, StyleSheet, View, ViewStyle } from 'react-native'
 import AnimatedValue = Animated.AnimatedValue
 
 interface Props {

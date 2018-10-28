@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { NavigationEventSubscription } from 'react-navigation'
 import QuestionBase from '../components/QuestionBase'
-import {actions} from '../store'
+import { actions } from '../store'
 
 import { ScreenProps } from '../commonTypes'
 

@@ -1,9 +1,10 @@
 import * as dateFns from 'date-fns'
 import * as React from 'react'
-import { BackHandler, LayoutChangeEvent, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { BackHandler, LayoutChangeEvent, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
+import Modal from 'react-native-modal'
 import { NavigationEventSubscription, NavigationScreenProp } from 'react-navigation'
-import Month, { CalendarData } from '../components/Month'
+import Month, { CalendarData, CalendarEntry } from '../components/Month'
 import Screen from '../components/Screen'
 import { goHomeAndReset } from '../navigation'
 import { getEntries, IEntryData } from '../storage'
@@ -18,12 +19,19 @@ interface State {
   },
   selectedMonth: Date
   entryData: CalendarData
+  modalContent: CalendarData | null
 }
+
+const COLOR_PRIMARY = '#663399'
+const { height: deviceHeight } = Dimensions.get('window')
 
 const MonthButton = (props: {onPress: any, label: string, enabled: boolean}) => {
   return (
     <TouchableOpacity onPress={() => props.enabled && props.onPress()} style={{flex: 1, alignItems: 'center'}}>
-      <LinearGradient colors={props.enabled ? ['#663399', '#442266'] : ['#cccccc', '#c0c0c0']} style={{padding: 10, borderRadius: 5}}>
+      <LinearGradient
+        colors={props.enabled ? [COLOR_PRIMARY, '#442266'] : ['#cccccc', '#c0c0c0']}
+        style={{padding: 10, borderRadius: 5}}
+      >
         <Text style={{color: 'white'}}>{props.label}</Text>
       </LinearGradient>
     </TouchableOpacity>
@@ -31,7 +39,6 @@ const MonthButton = (props: {onPress: any, label: string, enabled: boolean}) => 
 }
 
 export default class Statistics extends React.Component<Props, State> {
-  private todayDate: Date
   private willBlurSub: NavigationEventSubscription
   private didFocusSub: NavigationEventSubscription
 
@@ -44,9 +51,8 @@ export default class Statistics extends React.Component<Props, State> {
       },
       selectedMonth: dateFns.startOfMonth(new Date()),
       entryData: {},
+      modalContent: null,
     }
-
-    this.todayDate = new Date()
 
     this.willBlurSub = this.props.navigation.addListener(
       'willBlur',
@@ -112,12 +118,25 @@ export default class Statistics extends React.Component<Props, State> {
     })
   }
 
+  onDayPress = (entries: CalendarData) => {
+    this.setState({
+      modalContent: entries,
+    })
+  }
+
+  closeModal = () => this.setState({ modalContent: null })
+
   render() {
     const previousMonth = dateFns.subMonths(this.state.selectedMonth, 1)
     const nextMonth = dateFns.addMonths(this.state.selectedMonth, 1)
     const dateKeys = Object.keys(this.state.entryData).sort()
     const hasFutureEntries = new Date(dateKeys[dateKeys.length -1]) > dateFns.endOfMonth(this.state.selectedMonth)
     const hasPastEntries = new Date(dateKeys[0]) < this.state.selectedMonth
+
+    const modalDate = this.state.modalContent ? Object.keys(this.state.modalContent)[0] : null
+    const modalContent = this.state.modalContent && modalDate ? this.state.modalContent[modalDate] : null
+    const modalHeight = modalContent ? ((modalContent.length * 50) + 80) : 0
+    console.log(modalHeight)
     return (
       <Screen style={styles.container} onLayout={this.onLayout}>
         <View style={styles.selectorContainer}>
@@ -136,19 +155,79 @@ export default class Statistics extends React.Component<Props, State> {
           />
         </View>
         <View style={styles.monthContainer}>
-          <Month selectedMonth={this.state.selectedMonth} data={this.state.entryData} />
+          <Month onDayPress={this.onDayPress} selectedMonth={this.state.selectedMonth} data={this.state.entryData} />
         </View>
+        <Modal
+          isVisible={this.state.modalContent !== null}
+          useNativeDriver={true}
+          animationIn='zoomInDown'
+          animationOut='zoomOutUp'
+          onBackdropPress={this.closeModal}
+          onBackButtonPress={this.closeModal}
+        >
+          {modalContent !== null && modalDate !== null && (
+            <View style={styles.modal}>
+              <View style={[styles.headerRow]}>
+                <Text style={{flex: 2, color: COLOR_PRIMARY}}>
+                  {dateFns.format(new Date(modalDate), 'dddd, Do of MMMM, YYYY')}
+                </Text>
+                <TouchableOpacity onPress={this.closeModal} style={{flex: 1, alignSelf: 'flex-start', alignItems: 'flex-end'}}>
+                  <LinearGradient
+                    colors={[COLOR_PRIMARY, '#442266']}
+                    style={{padding: 10, marginTop: 10, borderRadius: 5, right: 0, alignItems: 'flex-start'}}
+                  >
+                    <Text style={{color: 'white'}}>Close</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+              {modalContent && modalContent.map((entry: CalendarEntry) => (
+                <View style={styles.modalRow} key={entry.time}>
+                  <View style={{flex: 1}}><Text>{entry.time}</Text></View>
+                  <View style={{flex: 1}}><Text>{entry.name}</Text></View>
+                  <View style={{flex: 1}}><Text>{entry.origin}</Text></View>
+                  <View style={{flex: 1}}><Text>{entry.intensity}</Text></View>
+                </View>
+              ))}
+            </View>
+          )}
+        </Modal>
       </Screen>
     )
   }
 }
 
-        // <Graph data={testData} size={this.state.graphSize} />
 const styles = StyleSheet.create({
   container:  {
-    // padding: 12,
     flex:  1,
     backgroundColor: '#F5FCFF',
+  },
+  headerRow: {
+    flexDirection: 'row',
+    paddingLeft: 10,
+    paddingRight: 10,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  modalRow: {
+    flexDirection: 'row',
+    marginBottom: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  modal: {
+    backgroundColor: 'white',
+    width: '90%',
+    alignSelf: 'center',
+    borderRadius: 15,
+    alignItems: 'flex-start',
+    borderWidth: 4,
+    borderColor: COLOR_PRIMARY,
+    // height: deviceHeight/2,
+    justifyContent: 'flex-start',
+    // alignItems: 'flex-start',
   },
   selectorContainer: {
     flexDirection: 'row',
@@ -158,10 +237,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   monthContainer:  {
-    // padding: 12,
     flex:  1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
 })

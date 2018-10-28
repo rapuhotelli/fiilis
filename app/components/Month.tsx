@@ -7,28 +7,37 @@ const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window')
 
 interface IDayProps {
   dayNumber: number | null
-  entryData: CalendarEntry[] | null
+  dayData: CalendarData | null // CalendarEntry[] | null
+  onDayPress?: (entries: CalendarData) => void
 }
-const Day = ({entryData, dayNumber}: IDayProps) => {
-  const gradient = entryData ? ['#663399', '#442266'] : ['#cccccc', '#c0c0c0']
-  const textColor = entryData ? 'white' : 'black'
+const Day = ({dayData, dayNumber, onDayPress = () => {}}: IDayProps) => {
+  // const gradient = dayData ? ['#663399', '#442266'] : ['#cccccc', '#c0c0c0']
+  const textColor = dayData ? '#663399' : 'black'
+  const borderColor = dayData? '#663399' : '#eeeeee'
+  const entryData = dayData ? dayData[Object.keys(dayData)[0]] : null
+  console.log(dayData)
   return (
     <View style={[styles.day]}>
-      {dayNumber !== null && (
-      <TouchableOpacity>
-        <LinearGradient colors={gradient} style={styles.innerDay}>
+      {(dayNumber !== null) && (
+      <TouchableOpacity onPress={(e) => dayData && onDayPress(dayData)}>
+        <View style={[styles.innerDay, {borderWidth: 2, borderColor}]}>
           <Text style={{color: textColor, alignSelf: 'flex-start', paddingLeft: 5}}>{dayNumber}</Text>
           {entryData && (
             <View style={styles.entryCounter}>
               {entryData && <Text style={{color: textColor}}>{entryData.length}</Text>}
             </View>
           )}
-        </LinearGradient>
+        </View>
       </TouchableOpacity>
       )}
     </View>
   )
 }
+/*
+        <LinearGradient colors={gradient} style={styles.innerDay}>
+        </LinearGradient>
+
+ */
 
 export interface CalendarEntry {
   time: string
@@ -43,33 +52,31 @@ export interface CalendarData {
 
 interface Props {
   data: CalendarData
-  selectedMonth: Date,
+  selectedMonth: Date
+  onDayPress: (entries: CalendarData) => void
 }
 interface State {
   selectedDate: Date
 }
 
 class Month extends React.Component<Props, State> {
-  state = {
-    selectedDate: new Date(),
-  }
-
   renderMonth() {
     const days = []
     const isoWeekDay = dateFns.getISODay(this.props.selectedMonth)
     const daysInMonth = dateFns.getDaysInMonth(this.props.selectedMonth)
     for (let i = 1 - (isoWeekDay - 1); i <= daysInMonth; i++) {
       if (i <= 0) {
-        days.push(<Day key={i} entryData={null} dayNumber={null} />)
+        days.push(<Day key={i} dayData={null} dayNumber={null} />)
         continue
       }
       const currentDay = dateFns.addDays(this.props.selectedMonth, i - 1)
-      const result = dateFns.format(
-        currentDay,
-        'YYYY-MM-DD',
-      )
-      const entryData = this.props.data[result]
-      days.push(<Day key={i} entryData={entryData} dayNumber={i} />)
+      const result = dateFns.format(currentDay, 'YYYY-MM-DD')
+      // const entryData = this.props.data[result]
+
+      const dayDataContents = this.props.data[result]
+      const dayData = dayDataContents ? {[result]: dayDataContents} : null
+
+      days.push(<Day onDayPress={this.props.onDayPress} key={i} dayData={dayData} dayNumber={i} />)
     }
     return days
   }
@@ -101,9 +108,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     height: '100%',
     borderRadius: 5,
+    backgroundColor: 'white',
   },
   entryCounter: {
-    alignSelf: 'flex-end', padding: 5,
+    alignSelf: 'flex-end',
+    padding: 5,
     borderTopWidth: 2,
     borderLeftWidth: 2,
     borderColor: 'white',

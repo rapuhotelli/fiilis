@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { ScreenProps } from '../commonTypes'
 import QuestionBase from '../components/QuestionBase'
-import {actions, Consumer, Dispatch} from '../store'
+import { actions, Consumer, Dispatch } from '../store'
 
 const options = [
   'major',
