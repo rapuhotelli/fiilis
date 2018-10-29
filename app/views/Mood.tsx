@@ -40,6 +40,7 @@ class Mood extends React.Component<ScreenProps> {
   render() {
     return (
       <QuestionBase
+          title='How are you feeling?'
           onSelect={(name) => this.onSelect(name)}
           navigation={this.props.navigation}
           questionOptions={options}

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "yarn start & yarn watch \"yarn lint\" ./app",
     "start": "node node_modules/react-native/local-cli/cli.js start",
+    "build": "cd android && ./gradlew assembleRelease",
     "test": "jest",
     "lint": "tslint -p \".\" -t stylish"
   },

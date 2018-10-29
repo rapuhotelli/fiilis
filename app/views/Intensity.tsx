@@ -20,6 +20,7 @@ const Intensity = (props: ScreenProps) => {
     <Consumer>
       {({ dispatch }) => {
         return (<QuestionBase
+          title='How strongly?'
           onSelect={(name) => onSelect(dispatch, name)}
           navigation={props.navigation}
           questionOptions={options}

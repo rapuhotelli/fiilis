@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { LayoutChangeEvent, View } from 'react-native'
+import { LayoutChangeEvent, View, Text } from 'react-native'
 import { StyleSheet } from 'react-native'
 import FeelButton from '../components/FeelButton'
 import Screen from '../components/Screen'
@@ -9,6 +9,7 @@ interface Props {
   questionOptions: string[],
   questionName: string,
   onSelect: (ref: any) => void
+  title: string
 }
 
 interface State {
@@ -35,9 +36,12 @@ export default class MoodQuestion extends React.Component<Props, State> {
   }
 
   render() {
-    const { questionOptions = [] } = this.props
+    const { title, questionOptions = [] } = this.props
     return (
       <Screen style={styles.container}>
+        <View style={{padding: 20, marginBottom: 20}}>
+          <Text style={{fontSize: 30}}>{title}</Text>
+        </View>
         <View style={styles.grid} onLayout={this.layout}>
           {this.state.boxSize > 0 && questionOptions.map((opt) => (
               <FeelButton

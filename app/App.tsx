@@ -8,7 +8,7 @@
 
 import * as React from 'react'
 import MainNav from './navigation'
-import { clearStorage, initStorage } from './storage'
+import { initStorage } from './storage'
 import { Consumer, Provider } from './store'
 
 export default class App extends React.Component<{}> {

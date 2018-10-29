@@ -40,6 +40,7 @@ const Origin = (props: ScreenProps) => {
     <Consumer>
       {({ dispatch }) => {
         return (<QuestionBase
+          title='Where did it come from?'
           onSelect={(name) => onSelect(dispatch, name)}
           navigation={props.navigation}
           questionOptions={options}

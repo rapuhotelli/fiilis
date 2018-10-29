@@ -1,6 +1,6 @@
 import * as dateFns from 'date-fns'
 import * as React from 'react'
-import { BackHandler, LayoutChangeEvent, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native'
+import { BackHandler, Dimensions, LayoutChangeEvent, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import Modal from 'react-native-modal'
 import { NavigationEventSubscription, NavigationScreenProp } from 'react-navigation'
@@ -23,7 +23,6 @@ interface State {
 }
 
 const COLOR_PRIMARY = '#663399'
-const { height: deviceHeight } = Dimensions.get('window')
 
 const MonthButton = (props: {onPress: any, label: string, enabled: boolean}) => {
   return (
